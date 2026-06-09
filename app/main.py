@@ -60,7 +60,8 @@ def snapshot(db: Session = Depends(get_db)) -> dict:
     return {
         "inventory": spot.inventory_rows(prices),
         "events": _event_feed(events),
-        "futures": futures.cash_flow_rows(),
+        "futures": _futures_chart_rows(),          # formato {d, flow, equity} para el gráfico
+        "futures_cash": futures.cash_flow_rows(),  # saldos reales de caja
         "futures_pnl_total": futures.total_realized_pnl("USDT"),
     }
 
@@ -109,3 +110,14 @@ def _event_feed(events: list[LedgerEvent]) -> list[dict]:
             "ago": "seed",
         })
     return feed
+
+
+def _futures_chart_rows() -> list[dict]:
+    """Datos simulados para el gráfico (formato {d, flow, equity}). Se reemplazará con histórico real en Epic 3."""
+    flows = [320, -180, 450, 210, -120, 680, 140, -260, 520, 390, -90, 610, 240, 450]
+    base = 24500
+    rows = []
+    for idx, flow in enumerate(flows, start=1):
+        base += flow
+        rows.append({"d": f"D-{15 - idx:02d}", "flow": flow, "equity": base})
+    return rows

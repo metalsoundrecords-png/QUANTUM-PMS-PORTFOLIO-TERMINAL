@@ -2028,7 +2028,7 @@ function EventLog({ events }) {
       ]),
     ]),
     h('div', { className: 'log-feed', key: 'feed' }, events.map((ev, i) => {
-      const t = EVENT_TYPES[ev.type];
+      const t = EVENT_TYPES[ev.type] || { color: '#9AA4B6', dot: '#9AA4B6' };
       return h('div', { className: 'log-item' + (ev.fresh ? ' fresh' : ''), key: ev.uid }, [
         h('div', { className: 'log-rail', key: 'r' }, [
           h('div', { className: 'log-dot', key: 'd', style: { background: t.dot, boxShadow: `0 0 7px ${t.dot}` } }),
