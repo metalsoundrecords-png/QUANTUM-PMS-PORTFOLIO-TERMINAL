@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from .config import STATIC_DIR
 from .database import LedgerEvent, SessionLocal, init_db
 from .futures_isolation import FuturesLedger
+from .parsers import parse_csv
 from .prices import FALLBACK_PRICES, fetch_prices
 from .seed import seed_database
 from .vwap_engine import VWAPEngine
@@ -67,10 +68,27 @@ def snapshot(db: Session = Depends(get_db)) -> dict:
 
 
 @app.post("/api/import/csv")
-async def import_csv(file: UploadFile) -> dict:
+async def import_csv(file: UploadFile, db: Session = Depends(get_db)) -> dict:
     raw = await file.read()
-    fills = max(1, raw.count(b"\n") - 1)
-    return {"filename": file.filename, "fills": fills, "status": "accepted"}
+    events, fmt, warnings = parse_csv(raw)
+    if not events:
+        return {"filename": file.filename, "fills": 0, "status": "error",
+                "format": fmt, "warnings": warnings}
+
+    # Evitar duplicados: filtrar transaction_hash ya existentes
+    existing = {h for (h,) in db.query(LedgerEvent.transaction_hash).all()}
+    new_events = [e for e in events if e.transaction_hash not in existing]
+    db.add_all(new_events)
+    db.commit()
+
+    return {
+        "filename": file.filename,
+        "fills": len(new_events),
+        "duplicates_skipped": len(events) - len(new_events),
+        "format": fmt,
+        "status": "ok",
+        "warnings": warnings,
+    }
 
 
 @app.websocket("/ws/live")

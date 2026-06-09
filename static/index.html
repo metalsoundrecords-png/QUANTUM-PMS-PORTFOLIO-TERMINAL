@@ -1418,21 +1418,6 @@ body {
   <script src="/static/vendor/react.development.js"></script>
   <script src="/static/vendor/react-dom.development.js"></script>
   <script src="/static/vendor/babel.min.js"></script>
-  <script>
-    window.onerror = function(msg, src, line, col, err) {
-      document.getElementById('root').innerHTML =
-        '<pre style="color:#ff0;background:#111;padding:20px;font:13px monospace;white-space:pre-wrap">' +
-        'ERROR: ' + msg + '\nArchivo: ' + src + '\nLínea: ' + line + '\n\n' +
-        (err && err.stack || '') + '</pre>';
-      return false;
-    };
-    window.addEventListener('unhandledrejection', function(e) {
-      document.getElementById('root').innerHTML =
-        '<pre style="color:#f90;background:#111;padding:20px;font:13px monospace;white-space:pre-wrap">' +
-        'PROMISE ERROR: ' + (e.reason && (e.reason.message || e.reason)) + '\n\n' +
-        (e.reason && e.reason.stack || '') + '</pre>';
-    });
-  </script>
 
 <script type="text/babel" data-presets="react">
 ;(function(){
@@ -1481,39 +1466,40 @@ const SOURCES = [
 ];
 
 // ---- Event ledger pool (event sourcing) ----
+// Tipos de evento — claves en español, alineadas con el backend
 const EVENT_TYPES = {
   'COMPRA':          { color: '#39FF14',  dot: '#39FF14' },
   'VENTA':           { color: '#FF3B5C',  dot: '#FF3B5C' },
   'TRANSFERENCIA':   { color: '#00F0FF',  dot: '#00F0FF' },
   'FUTURES PNL':     { color: '#B24DFF',  dot: '#B24DFF' },
   'COMISIÓN':        { color: '#9AA4B6',  dot: '#9AA4B6' },
-  'IMPORTACIÓN CSV': { color: '#FFB020',  dot: '#FFB020' },
   'SYNC':            { color: '#9AA4B6',  dot: '#9AA4B6' },
+  'IMPORTACIÓN CSV': { color: '#FFB020',  dot: '#FFB020' },
 };
 
 const SEED_EVENTS = [
-  { type: 'COMPRA',          parts: ['0.5 ETH comprado @ BingX ', { mono: '(VWAP actualizado)' }],              ago: '12s' },
-  { type: 'TRANSFERENCIA',   parts: ['10,000 USDC movido a Arbitrum ', { mono: '(costo base preservado)' }],    ago: '1m' },
-  { type: 'FUTURES PNL',     parts: [{ mono: '+$450.00 USDT' }, ' realizado ', { mono: '(aislado de Spot)' }],  ago: '3m' },
-  { type: 'SYNC',            parts: ['BingX API snapshot reconciliado ', { mono: '· 0 drift' }],                ago: '5m' },
-  { type: 'COMPRA',          parts: ['1.20 SOL comprado @ BingX ', { mono: '(VWAP 142.30)' }],                  ago: '8m' },
-  { type: 'TRANSFERENCIA',   parts: ['0.20 WBTC enviado a Arbitrum Pool'],                                      ago: '14m' },
-  { type: 'IMPORTACIÓN CSV', parts: ['bingx_spot_may.csv procesado ', { mono: '· 84 fills' }],                  ago: '22m' },
-  { type: 'VENTA',           parts: ['320 ARB vendido @ BingX ', { mono: '(realizado −$48.10)' }],              ago: '31m' },
-  { type: 'FUTURES PNL',     parts: [{ mono: '−$120.00 USDT' }, ' realizado ', { mono: '(BTC-PERP)' }],         ago: '46m' },
-  { type: 'SYNC',            parts: ['Attestation de Trezor vault verificada'],                                  ago: '1h' },
+  { type: 'COMPRA',          parts: ['0.5 ETH @ BingX ', { mono: '(VWAP actualizado)' }],              ago: '12s' },
+  { type: 'TRANSFERENCIA',   parts: ['10,000 USDC → Arbitrum ', { mono: '(costo base preservado)' }],   ago: '1m'  },
+  { type: 'FUTURES PNL',     parts: [{ mono: '+$450.00 USDT' }, ' realizado ', { mono: '(aislado)' }],  ago: '3m'  },
+  { type: 'SYNC',            parts: ['BingX API reconciliado ', { mono: '· 0 drift' }],                 ago: '5m'  },
+  { type: 'COMPRA',          parts: ['1.20 SOL @ BingX ', { mono: '(VWAP 142.30)' }],                  ago: '8m'  },
+  { type: 'TRANSFERENCIA',   parts: ['0.20 WBTC → Arbitrum Pool'],                                      ago: '14m' },
+  { type: 'IMPORTACIÓN CSV', parts: ['bingx_spot.csv ', { mono: '· 84 fills importados' }],             ago: '22m' },
+  { type: 'VENTA',           parts: ['320 ARB @ BingX ', { mono: '(realizado −$48.10)' }],              ago: '31m' },
+  { type: 'FUTURES PNL',     parts: [{ mono: '−$120.00 USDT' }, ' realizado ', { mono: '(BTC-PERP)' }], ago: '46m' },
+  { type: 'SYNC',            parts: ['Attestation Trezor vault verificada'],                             ago: '1h'  },
 ];
 
-// Pool de eventos en tiempo real (prepended live)
+// Pool de eventos en vivo (WebSocket)
 const LIVE_EVENT_POOL = [
-  { type: 'COMPRA',        parts: ['0.08 ETH comprado @ BingX ', { mono: '(VWAP actualizado)' }] },
+  { type: 'COMPRA',        parts: ['0.08 ETH @ BingX ', { mono: '(VWAP actualizado)' }] },
   { type: 'FUTURES PNL',   parts: [{ mono: '+$210.00 USDT' }, ' realizado ', { mono: '(ETH-PERP, aislado)' }] },
-  { type: 'TRANSFERENCIA', parts: ['2,500 USDC movido a Arbitrum ', { mono: '(costo base preservado)' }] },
-  { type: 'VENTA',         parts: ['0.40 SOL vendido @ BingX ', { mono: '(realizado +$9.40)' }] },
+  { type: 'TRANSFERENCIA', parts: ['2,500 USDC → Arbitrum ', { mono: '(costo base preservado)' }] },
+  { type: 'VENTA',         parts: ['0.40 SOL @ BingX ', { mono: '(realizado +$9.40)' }] },
   { type: 'SYNC',          parts: ['BingX API heartbeat ', { mono: '· latencia 41ms' }] },
   { type: 'FUTURES PNL',   parts: [{ mono: '−$65.00 USDT' }, ' realizado ', { mono: '(BTC-PERP, aislado)' }] },
-  { type: 'TRANSFERENCIA', parts: ['0.05 WBTC enviado a Arbitrum Pool'] },
-  { type: 'COMPRA',        parts: ['540 ARB comprado @ BingX ', { mono: '(VWAP 0.918)' }] },
+  { type: 'TRANSFERENCIA', parts: ['0.05 WBTC → Arbitrum Pool'] },
+  { type: 'COMPRA',        parts: ['540 ARB @ BingX ', { mono: '(VWAP 0.918)' }] },
 ];
 
 // ---- Futures isolated cash-flow series (last 14 sessions) ----
@@ -1653,7 +1639,7 @@ const { createElement: h, useState, useEffect, useRef, useMemo } = React;
 
 /* ----------------------------- Sidebar ----------------------------- */
 const NAV = [
-  { key: 'dashboard', label: 'Panel Principal',      icon: 'dashboard' },
+  { key: 'dashboard', label: 'Dashboard',           icon: 'dashboard' },
   { key: 'spot',      label: 'Inventario Spot',      icon: 'spot', badge: '8' },
   { key: 'hedge',     label: 'Coberturas · Futuros', icon: 'hedge' },
   { key: 'apis',      label: 'Gestión APIs / CSV',   icon: 'api' },
@@ -1699,7 +1685,7 @@ function Sidebar({ active, onNav }) {
 
 /* ----------------------------- Topbar ----------------------------- */
 const SECTION_TITLES = {
-  dashboard: 'Panel Principal',
+  dashboard: 'Dashboard',
   spot: 'Inventario Spot',
   hedge: 'Coberturas · Futuros',
   apis: 'Gestión de APIs / CSV',
@@ -1871,14 +1857,8 @@ function AssetCell({ row }) {
 function InventoryTable({ rows, filter, onFilter, sort, onSort, flashMap }) {
   return h('div', { className: 'card', style: { overflow: 'hidden' } }, [
     h('div', { className: 'card-head', key: 'h' }, [
-      h('h2', { key: 't' }, [
-        'Inventario Spot · Motor VWAP Real ',
-        h('span', { key: 'tip', className: 'tip', style: { display: 'inline', cursor: 'help', color: 'var(--ink-3)', fontSize: 12, verticalAlign: 'middle' } }, [
-          'ⓘ',
-          h('span', { className: 'tip-pop', key: 'tp', style: { width: 240 } }, 'Posiciones de activos en todos tus exchanges y wallets. El VWAP Real es el costo promedio ponderado por volumen, calculado desde compras históricas usando método FIFO.'),
-        ]),
-      ]),
-      h('span', { className: 'hint', key: 'hint' }, 'rastreo multi-plataforma'),
+      h('h2', { key: 't' }, 'Spot Inventory · Real VWAP Engine'),
+      h('span', { className: 'hint', key: 'hint' }, 'rastreo cross-venue'),
       h('div', { className: 'spacer', key: 'sp' }),
       h('div', { className: 'seg', key: 'seg' }, ['Todos', 'BingX', 'Trezor', 'Arbitrum'].map(f =>
         h('button', { key: f, className: filter === f ? 'on' : '', onClick: () => onFilter(f) }, f)
@@ -1990,14 +1970,8 @@ function Dropzone({ onIngest }) {
 
   return h('div', { className: 'card', key: 'dz' }, [
     h('div', { className: 'card-head', key: 'h' }, [
-      h('h2', { key: 't' }, [
-        'Importación de Datos ',
-        h('span', { key: 'tip', className: 'tip', style: { display: 'inline', cursor: 'help', color: 'var(--ink-3)', fontSize: 12, verticalAlign: 'middle' } }, [
-          'ⓘ',
-          h('span', { className: 'tip-pop', key: 'tp', style: { width: 240 } }, 'Importa historial de transacciones desde BingX, Binance u otros exchanges en formato CSV. Cada fila se convierte en un evento inmutable en el ledger.'),
-        ]),
-      ]),
-      h('span', { className: 'hint', key: 'hint' }, 'registro de eventos'),
+      h('h2', { key: 't' }, 'Data Ingestion'),
+      h('span', { className: 'hint', key: 'hint' }, 'event-sourced'),
     ]),
     h('div', {
       key: 'zone',
@@ -2010,7 +1984,7 @@ function Dropzone({ onIngest }) {
       h('input', { key: 'in', ref: inputRef, type: 'file', accept: '.csv', style: { display: 'none' },
         onChange: (e) => { const f = e.target.files[0]; if (f) runImport(f); e.target.value = ''; } }),
       h('div', { className: 'dz-ico', key: 'i' }, Icons.upload({ size: 24 })),
-      h('div', { className: 'dz-main', key: 'm' }, 'Arrastra tu CSV de BingX / exchange aquí'),
+      h('div', { className: 'dz-main', key: 'm' }, 'Drop BingX / Generic CSV here'),
       h('div', { className: 'dz-sub', key: 's' }, drag ? 'Suelta para procesar…' : 'o haz clic para seleccionar archivo'),
     ]),
     h('div', { key: 'pg', className: 'dz-progress' + (progress !== null ? ' show' : '') },
@@ -2029,17 +2003,11 @@ function Dropzone({ onIngest }) {
 function EventLog({ events }) {
   return h('div', { className: 'card', key: 'log' }, [
     h('div', { className: 'card-head', key: 'h' }, [
-      h('h2', { key: 't' }, [
-        'Registro de Transacciones ',
-        h('span', { key: 'tip', className: 'tip', style: { display: 'inline', cursor: 'help', color: 'var(--ink-3)', fontSize: 12, verticalAlign: 'middle' } }, [
-          'ⓘ',
-          h('span', { className: 'tip-pop', key: 'tp', style: { width: 240 } }, 'Flujo de eventos del sistema en tiempo real. Cada operación (compra, venta, transferencia, PnL de futuros) queda registrada de forma inmutable como un evento individual.'),
-        ]),
-      ]),
+      h('h2', { key: 't' }, 'Event Sourcing Ledger'),
       h('div', { className: 'spacer', key: 'sp' }),
       h('span', { className: 'tag green', key: 'live' }, [
         h('span', { key: 'd', style: { width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 6px var(--green)', display: 'inline-block' } }),
-        'EN VIVO',
+        'LIVE',
       ]),
     ]),
     h('div', { className: 'log-feed', key: 'feed' }, events.map((ev, i) => {
@@ -2054,7 +2022,7 @@ function EventLog({ events }) {
           h('div', { className: 'log-msg', key: 'm' }, ev.parts.map((p, j) =>
             typeof p === 'string' ? p : h('span', { className: 'mono', key: j, style: { color: 'var(--ink-2)' } }, p.mono)
           )),
-          h('div', { className: 'log-time', key: 'tm' }, ev.ago === 'now' ? 'ahora' : ev.ago === 'seed' ? 'inicial' : 'hace ' + ev.ago),
+          h('div', { className: 'log-time', key: 'tm' }, ev.ago + ' ago'),
         ]),
       ]);
     })),
@@ -2184,7 +2152,7 @@ function FuturesVault({ data }) {
             h('div', { className: 'isolation-note', key: 'n' }, 'Flujo de caja aislado — no altera la matemática del inventario Spot'),
           ]),
           h('div', { className: 'spacer', key: 'sp' }),
-          h('span', { className: 'tag purple', key: 'tag' }, [Icons.lock({ key: 'i', size: 11 }), 'MARGEN AISLADO']),
+          h('span', { className: 'tag purple', key: 'tag' }, [Icons.lock({ key: 'i', size: 11 }), 'ISOLATED MARGIN']),
         ]),
         h('div', { className: 'futures-body', key: 'body' }, [
           h('div', { className: 'fut-stats', key: 'stats' }, [
@@ -2319,7 +2287,7 @@ function App() {
       const aged = prev.map(e => ({ ...e, fresh: false }));
       const fresh = {
         type: 'IMPORTACIÓN CSV',
-        parts: [name + ' procesado ', { mono: `· ${fills} fills` }],
+        parts: [name + ' importado ', { mono: `· ${fills} fills` }],
         uid: UID++, ago: 'now', fresh: true,
       };
       return [fresh, ...aged].slice(0, 11);
@@ -2435,8 +2403,7 @@ function SettingsView() {
 
 function MobileDock({ active, onNav }) {
   const tabs = [
-    { key: 'dashboard', icon: 'dashboard', label: 'Panel Principal' },
-
+    { key: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
     { key: 'spot',      icon: 'spot',      label: 'Spot' },
     { key: '__add',     center: true },
     { key: 'hedge',     icon: 'hedge',     label: 'Futuros' },
@@ -2464,22 +2431,7 @@ function MobileDock({ active, onNav }) {
   );
 }
 
-class ErrorBoundary extends React.Component {
-  constructor(p) { super(p); this.state = { err: null }; }
-  static getDerivedStateFromError(err) { return { err }; }
-  componentDidCatch(err, info) { console.error('React render error:', err, info); }
-  render() {
-    if (this.state.err) {
-      return h('pre', { style: { color: '#ff0', background: '#111', padding: 20, font: '13px monospace', whiteSpace: 'pre-wrap', margin: 0 } },
-        'REACT ERROR: ' + this.state.err.message + '\n\n' + (this.state.err.stack || ''));
-    }
-    return this.props.children;
-  }
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  h(ErrorBoundary, null, h(App))
-);
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 
 })();
 </script>
