@@ -1418,6 +1418,21 @@ body {
   <script src="/static/vendor/react.development.js"></script>
   <script src="/static/vendor/react-dom.development.js"></script>
   <script src="/static/vendor/babel.min.js"></script>
+  <script>
+    window.onerror = function(msg, src, line, col, err) {
+      document.getElementById('root').innerHTML =
+        '<pre style="color:#ff0;background:#111;padding:20px;font:13px monospace;white-space:pre-wrap">' +
+        'ERROR: ' + msg + '\nArchivo: ' + src + '\nLínea: ' + line + '\n\n' +
+        (err && err.stack || '') + '</pre>';
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+      document.getElementById('root').innerHTML =
+        '<pre style="color:#f90;background:#111;padding:20px;font:13px monospace;white-space:pre-wrap">' +
+        'PROMISE ERROR: ' + (e.reason && (e.reason.message || e.reason)) + '\n\n' +
+        (e.reason && e.reason.stack || '') + '</pre>';
+    });
+  </script>
 
 <script type="text/babel" data-presets="react">
 ;(function(){
@@ -2449,7 +2464,22 @@ function MobileDock({ active, onNav }) {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+class ErrorBoundary extends React.Component {
+  constructor(p) { super(p); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  componentDidCatch(err, info) { console.error('React render error:', err, info); }
+  render() {
+    if (this.state.err) {
+      return h('pre', { style: { color: '#ff0', background: '#111', padding: 20, font: '13px monospace', whiteSpace: 'pre-wrap', margin: 0 } },
+        'REACT ERROR: ' + this.state.err.message + '\n\n' + (this.state.err.stack || ''));
+    }
+    return this.props.children;
+  }
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  h(ErrorBoundary, null, h(App))
+);
 
 })();
 </script>
