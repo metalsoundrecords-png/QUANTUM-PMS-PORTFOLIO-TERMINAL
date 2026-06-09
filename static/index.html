@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="es" translate="no"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="google" content="notranslate">
+  <title>Quantum PMS · Crypto Portfolio Terminal</title>
+  <style>
+/* ============================================================
+   QUANTUM PMS — Crypto Portfolio Management Terminal
+   Deep blue-black institutional dark mode + balanced neon
+   ============================================================ */
+
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/assets/5812f6fc-677b-4c13-89f7-0778f659d78f.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/assets/d31d4c2d-833c-4f6a-ad2c-1a83aefd9a1b.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/assets/ba5a7eef-1b99-43f3-b293-cfedea9d0da4.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/assets/5a1737de-2e94-4c38-a76c-3d4c25bf1590.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/assets/80b9da2b-9464-428e-bbb1-17820cb8b032.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/assets/e47968c9-7b60-4ca3-b0b9-79838863a71e.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/assets/142c81bb-2c9b-41e8-99bf-cdcca59e0ec1.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/assets/da736456-2c57-4176-9f34-006fbff38b16.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/assets/66f1757a-b2dc-454e-a80b-b292e1cd3ce9.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/assets/a45823e5-9ec5-444c-b1e5-d48aec0554ec.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/assets/31f80cdf-2217-4522-9c9d-5457717821d3.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/assets/fd16c149-e289-4fcf-ab32-7a987129eb04.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/assets/6ff3f8c1-8236-466c-a9df-4f5ab6fb2495.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/assets/294d3222-8479-49c9-beac-c20745cc4ded.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/assets/fd6d1154-ae9e-498f-9184-749e0b5a76d7.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/assets/99da52e2-4fd5-43ed-a81d-a1a515446cf2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/assets/fd4d9748-1e9c-4ab9-a65d-d5983b77db26.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/assets/b465d140-96d7-4165-a4ff-bba29ef978bd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/assets/ba5afec8-8f0f-4d60-aeb4-676412dda3f7.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/static/assets/0a038173-821d-46a9-90aa-42b2bc51d98d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/4978b507-572b-4f38-b0c5-eb87c21384b7.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/8c21f156-0c9a-461c-acd6-5f7b5fd90de3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/cecb4e25-3eba-49c3-b1b3-9a25eb6b3bb7.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/62fcb9dc-042c-4579-a434-93e5bc0ea0ce.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/a7a821ba-1c45-440f-8896-53989148ff72.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/e263ab7a-6d0c-453a-8259-52b7904a46e5.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/4978b507-572b-4f38-b0c5-eb87c21384b7.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/8c21f156-0c9a-461c-acd6-5f7b5fd90de3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/cecb4e25-3eba-49c3-b1b3-9a25eb6b3bb7.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/62fcb9dc-042c-4579-a434-93e5bc0ea0ce.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/a7a821ba-1c45-440f-8896-53989148ff72.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/e263ab7a-6d0c-453a-8259-52b7904a46e5.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/4978b507-572b-4f38-b0c5-eb87c21384b7.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/8c21f156-0c9a-461c-acd6-5f7b5fd90de3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/cecb4e25-3eba-49c3-b1b3-9a25eb6b3bb7.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/62fcb9dc-042c-4579-a434-93e5bc0ea0ce.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/a7a821ba-1c45-440f-8896-53989148ff72.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/e263ab7a-6d0c-453a-8259-52b7904a46e5.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/4978b507-572b-4f38-b0c5-eb87c21384b7.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/8c21f156-0c9a-461c-acd6-5f7b5fd90de3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/cecb4e25-3eba-49c3-b1b3-9a25eb6b3bb7.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/62fcb9dc-042c-4579-a434-93e5bc0ea0ce.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/a7a821ba-1c45-440f-8896-53989148ff72.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/e263ab7a-6d0c-453a-8259-52b7904a46e5.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/4978b507-572b-4f38-b0c5-eb87c21384b7.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/8c21f156-0c9a-461c-acd6-5f7b5fd90de3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/cecb4e25-3eba-49c3-b1b3-9a25eb6b3bb7.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/62fcb9dc-042c-4579-a434-93e5bc0ea0ce.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/a7a821ba-1c45-440f-8896-53989148ff72.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/static/assets/e263ab7a-6d0c-453a-8259-52b7904a46e5.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+:root {
+  /* Surfaces */
+  --bg-deep:      #0B0E14;   /* main canvas — blue-black, never pure black */
+  --bg-panel:     #0E1219;   /* cards / containers */
+  --bg-panel-2:   #11161F;   /* elevated / hover */
+  --bg-inset:     #090C12;   /* wells, table header */
+  --border:       #1E232F;   /* subtle dividers */
+  --border-soft:  #161B25;
+  --border-strong:#2A3242;
+
+  /* Neon accents */
+  --cyan:    #00F0FF;
+  --green:   #39FF14;
+  --green-2: #2BE08A;        /* tempered green for large fills */
+  --purple:  #9D00FF;
+  --purple-2:#B24DFF;
+  --amber:   #FFB020;
+  --red:     #FF3B5C;
+
+  /* Text */
+  --ink:        #E7ECF5;
+  --ink-2:      #9AA4B6;
+  --ink-3:      #5E6877;
+  --ink-4:      #3C4453;
+
+  /* Glow */
+  --glow-cyan:   0 0 0 1px rgba(0,240,255,.20), 0 12px 40px -16px rgba(0,240,255,.45);
+  --glow-green:  0 0 0 1px rgba(57,255,20,.18), 0 12px 40px -16px rgba(57,255,20,.40);
+  --glow-purple: 0 0 0 1px rgba(157,0,255,.20), 0 12px 40px -16px rgba(157,0,255,.45);
+
+  --radius:   12px;
+  --radius-sm: 8px;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --sidebar-w: 264px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint vignette + grid texture for "terminal" depth */
+  background-image:
+    radial-gradient(120% 90% at 80% -10%, rgba(0,240,255,.05), transparent 55%),
+    radial-gradient(100% 80% at 8% 110%, rgba(157,0,255,.05), transparent 55%),
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+  background-attachment: fixed;
+}
+
+::selection { background: rgba(0,240,255,.25); color: #fff; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1b2230; border-radius: 6px; border: 2px solid var(--bg-deep); }
+::-webkit-scrollbar-thumb:hover { background: #28303f; }
+
+/* ============================================================
+   App shell
+   ============================================================ */
+#root { min-height: 100vh; }
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, #0C1017 0%, #0A0D13 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 22px 20px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.brand-mark {
+  width: 34px; height: 34px;
+  position: relative;
+  flex: none;
+}
+.brand-mark svg { display: block; }
+.brand-name {
+  font-weight: 600;
+  letter-spacing: .14em;
+  font-size: 14px;
+  color: var(--ink);
+}
+.brand-name b { color: var(--cyan); font-weight: 700; }
+.brand-sub {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .26em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.nav {
+  flex: 1;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+}
+.nav-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 14px 12px 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  border: 1px solid transparent;
+  position: relative;
+  transition: background .15s, color .15s, border-color .15s;
+  user-select: none;
+}
+.nav-item svg { flex: none; width: 18px; height: 18px; opacity: .8; }
+.nav-item:hover { background: #10151e; color: var(--ink); }
+.nav-item:focus-visible { outline: none; background: #10151e; color: var(--ink); box-shadow: inset 0 0 0 1px rgba(0,240,255,.4); }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(0,240,255,.10), rgba(0,240,255,.02));
+  color: #fff;
+  border-color: rgba(0,240,255,.18);
+}
+.nav-item.active svg { opacity: 1; color: var(--cyan); }
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: -1px; top: 8px; bottom: 8px;
+  width: 2px; border-radius: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+.nav-item .badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.05);
+  color: var(--ink-2);
+  border: 1px solid var(--border);
+}
+
+.node-status {
+  margin: 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.node-status .pulse {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 1.6s ease-in-out infinite;
+  flex: none;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green); }
+  50% { opacity: .35; box-shadow: 0 0 2px var(--green); }
+}
+.node-status .label { font-size: 12.5px; color: var(--ink); font-weight: 500; }
+.node-status .sub { font-family: var(--mono); font-size: 10px; color: var(--ink-3); letter-spacing: .08em; }
+
+/* ============================================================
+   Main column
+   ============================================================ */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky; top: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 28px;
+  background: rgba(11,14,20,.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.topbar .crumb {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.topbar .spacer { flex: 1; }
+.clock {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  letter-spacing: .06em;
+}
+.clock b { color: var(--cyan); font-weight: 500; }
+.pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 11px;
+  padding: 6px 12px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg-panel);
+  color: var(--ink-2);
+}
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+.content {
+  padding: 26px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 1640px;
+  width: 100%;
+}
+
+/* ---------- Generic card ---------- */
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+}
+.card-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.card-head h2 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+}
+.card-head .hint {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+  letter-spacing: .05em;
+}
+.card-head .spacer { flex: 1; }
+
+/* ============================================================
+   KPI row
+   ============================================================ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.kpi {
+  background: linear-gradient(180deg, var(--bg-panel) 0%, #0C1017 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 18px 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 158px;
+  display: flex;
+  flex-direction: column;
+}
+.kpi::after { /* bottom neon glow strip */
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--accent, var(--cyan));
+  box-shadow: 0 0 18px 1px var(--accent, var(--cyan));
+  opacity: .9;
+}
+.kpi .kpi-glow {
+  position: absolute; left: 50%; bottom: -60px; transform: translateX(-50%);
+  width: 75%; height: 80px;
+  background: radial-gradient(closest-side, var(--accent, var(--cyan)), transparent);
+  opacity: .16; filter: blur(8px); pointer-events: none;
+}
+.kpi-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.kpi-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.kpi-ico {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  color: var(--accent, var(--cyan));
+}
+.kpi-big {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: -.02em;
+  margin-top: 14px;
+  color: #fff;
+  line-height: 1.05;
+}
+.kpi-big.cyan { color: var(--cyan); text-shadow: 0 0 22px rgba(0,240,255,.35); }
+.kpi-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  margin-top: 7px;
+  display: flex; align-items: center; gap: 8px;
+}
+.kpi-foot {
+  margin-top: auto;
+  padding: 12px 0 16px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+}
+
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono);
+  font-size: 10.5px; font-weight: 500;
+  padding: 3px 9px; border-radius: 6px;
+  letter-spacing: .04em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.tag.green  { color: var(--green);  background: rgba(57,255,20,.08);  border-color: rgba(57,255,20,.22); }
+.tag.cyan   { color: var(--cyan);   background: rgba(0,240,255,.08);  border-color: rgba(0,240,255,.22); }
+.tag.purple { color: var(--purple-2); background: rgba(157,0,255,.10); border-color: rgba(157,0,255,.28); }
+.tag.gray   { color: var(--ink-2);  background: rgba(255,255,255,.04); border-color: var(--border); }
+.tag.red    { color: var(--red);    background: rgba(255,59,92,.08);   border-color: rgba(255,59,92,.24); }
+.tag.amber  { color: var(--amber);  background: rgba(255,176,32,.08);  border-color: rgba(255,176,32,.24); }
+
+/* VWAP gauge */
+.vwap-gauge { margin-top: 14px; }
+.vwap-bar {
+  height: 8px; border-radius: 6px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.vwap-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(57,255,20,.4), var(--green));
+  box-shadow: 0 0 12px rgba(57,255,20,.5);
+  border-radius: 6px;
+  transition: width .6s cubic-bezier(.2,.8,.2,1);
+}
+.vwap-marks { display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+.vwap-marks .now { color: var(--ink); }
+
+/* Connected sources widgets */
+.sources { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+.source-chip {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 11.5px;
+}
+.source-orb {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; flex: none;
+  font-size: 9px; font-weight: 700;
+  position: relative;
+}
+.source-orb::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1px solid currentColor; opacity: .25;
+}
+.source-name { color: var(--ink); }
+.source-state { margin-left: auto; font-weight: 600; letter-spacing: .06em; }
+
+/* ============================================================
+   Center grid: table + ingestion
+   ============================================================ */
+.center-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 344px;
+  gap: 18px;
+  align-items: start;
+}
+
+/* ---------- Table ---------- */
+.table-tools { display: flex; align-items: center; gap: 8px; }
+.seg {
+  display: inline-flex; padding: 3px; gap: 2px;
+  background: var(--bg-inset); border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.seg button {
+  font-family: var(--mono); font-size: 11px;
+  padding: 5px 11px; border-radius: 6px;
+  background: transparent; border: 0; color: var(--ink-3);
+  cursor: pointer; letter-spacing: .04em; transition: .15s;
+}
+.seg button:hover { color: var(--ink); }
+.seg button.on { background: rgba(0,240,255,.12); color: var(--cyan); }
+
+.inv-table { width: 100%; border-collapse: collapse; }
+.inv-table thead th {
+  font-family: var(--mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: right;
+  padding: 11px 9px;
+  background: var(--bg-inset);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  position: sticky; top: 0;
+}
+.inv-table thead th:first-child { text-align: left; padding-left: 16px; }
+.inv-table tbody td:first-child { padding-left: 16px; }
+.inv-table thead th .arrow { color: var(--cyan); margin-left: 5px; opacity: 0; }
+.inv-table thead th.sorted .arrow { opacity: 1; }
+.inv-table thead th:hover { color: var(--ink-2); }
+
+.inv-table tbody td {
+  padding: 12px 9px;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+  color: var(--ink);
+}
+.inv-table tbody td:first-child { text-align: left; }
+.inv-table tbody tr { transition: background .15s; }
+.inv-table tbody tr:hover { background: #10141d; }
+.inv-table tbody tr:last-child td { border-bottom: 0; }
+
+.asset-cell { display: flex; align-items: center; gap: 11px; }
+.asset-ico {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: grid; place-items: center; flex: none;
+  font-family: var(--mono); font-weight: 700; font-size: 10px;
+  border: 1px solid var(--border);
+}
+.asset-cell { gap: 9px; }
+.asset-meta { display: flex; flex-direction: column; line-height: 1.2; }
+.asset-sym { color: #fff; font-weight: 600; font-size: 13px; }
+.asset-full { font-family: var(--sans); font-size: 10.5px; color: var(--ink-3); }
+
+.loc-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-family: var(--mono);
+  padding: 3px 8px; border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+}
+.loc-tag .ld { width: 6px; height: 6px; border-radius: 2px; }
+
+.pnl-pos { color: var(--green); }
+.pnl-neg { color: var(--red); }
+.pnl-cell { display: inline-flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
+.pnl-pct { font-size: 11px; opacity: .9; }
+
+.num-flash-up { animation: flashUp .7s ease; }
+.num-flash-down { animation: flashDown .7s ease; }
+@keyframes flashUp { 0% { color: var(--green); text-shadow: 0 0 12px rgba(57,255,20,.6);} 100%{} }
+@keyframes flashDown { 0% { color: var(--red); text-shadow: 0 0 12px rgba(255,59,92,.6);} 100%{} }
+
+.table-foot {
+  display: flex; align-items: center; gap: 16px;
+  padding: 13px 18px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink-2);
+}
+.table-foot .spacer { flex: 1; }
+.table-foot b { color: var(--ink); }
+
+/* ---------- Right column: ingestion + logs ---------- */
+.right-col { display: flex; flex-direction: column; gap: 18px; }
+
+.dropzone {
+  margin: 16px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 30px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,240,255,.015) 0 10px, transparent 10px 20px);
+}
+.dropzone:hover { border-color: rgba(0,240,255,.4); background: rgba(0,240,255,.03); }
+.dropzone.drag {
+  border-color: var(--cyan);
+  background: rgba(0,240,255,.07);
+  box-shadow: inset 0 0 30px rgba(0,240,255,.12);
+}
+.dropzone .dz-ico {
+  width: 48px; height: 48px; margin: 0 auto 12px;
+  border-radius: 12px; display: grid; place-items: center;
+  border: 1px solid rgba(0,240,255,.3);
+  color: var(--cyan);
+  background: rgba(0,240,255,.05);
+}
+.dropzone .dz-main {
+  font-family: var(--mono); font-size: 13px; color: var(--cyan);
+  letter-spacing: .04em; text-shadow: 0 0 16px rgba(0,240,255,.4);
+}
+.dropzone .dz-sub { font-size: 11px; color: var(--ink-3); margin-top: 6px; font-family: var(--mono); }
+.dz-progress { height: 4px; background: var(--bg-inset); border-radius: 4px; margin: 14px 16px 0; overflow: hidden; display: none; }
+.dz-progress.show { display: block; }
+.dz-progress i { display: block; height: 100%; width: 0; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); transition: width .15s linear; }
+.dz-files { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 7px; }
+.dz-file {
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--mono); font-size: 11px;
+  padding: 8px 11px; border-radius: 8px;
+  background: var(--bg-inset); border: 1px solid var(--border);
+}
+.dz-file .ok { color: var(--green); margin-left: auto; }
+
+/* ---------- Event log ---------- */
+.log-feed { padding: 8px 8px 12px; max-height: 360px; overflow-y: auto; }
+.log-item {
+  display: flex; gap: 11px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  position: relative;
+}
+.log-item:hover { background: #10141d; }
+.log-item.fresh { animation: logIn .5s cubic-bezier(.2,.8,.2,1); }
+@keyframes logIn {
+  from { opacity: 0; transform: translateY(-8px); background: rgba(0,240,255,.06); }
+  to { opacity: 1; transform: none; }
+}
+.log-rail { display: flex; flex-direction: column; align-items: center; flex: none; padding-top: 3px; }
+.log-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.log-line-v { width: 1px; flex: 1; background: var(--border); margin-top: 4px; }
+.log-body { min-width: 0; flex: 1; }
+.log-type {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.log-msg { font-size: 12px; color: var(--ink); margin-top: 3px; line-height: 1.4; }
+.log-msg .mono { font-family: var(--mono); }
+.log-time { font-family: var(--mono); font-size: 10px; color: var(--ink-4); margin-top: 4px; }
+
+/* ============================================================
+   Segregation divider
+   ============================================================ */
+.seg-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 6px 0 0;
+}
+.seg-divider .ln { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border-strong), transparent); }
+.seg-divider .lbl {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--ink-3);
+  display: flex; align-items: center; gap: 9px;
+}
+.seg-divider .lbl svg { color: var(--purple-2); }
+
+/* ============================================================
+   Futures segregated panel
+   ============================================================ */
+.futures-vault {
+  position: relative;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(157,0,255,.06), transparent 50%),
+    var(--bg-panel);
+  border: 1px solid rgba(157,0,255,.22);
+  border-radius: 14px;
+  padding: 2px;
+}
+.futures-vault::before, .futures-vault::after,
+.futures-vault > .corner-tl, .futures-vault > .corner-br {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  border-color: var(--purple-2); pointer-events: none;
+}
+.futures-vault::before { top: 8px; left: 8px; border-top: 1.5px solid; border-left: 1.5px solid; }
+.futures-vault::after  { bottom: 8px; right: 8px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+.futures-vault > .corner-tr { position: absolute; top: 8px; right: 8px; width: 16px; height: 16px; border-top: 1.5px solid var(--purple-2); border-right: 1.5px solid var(--purple-2); }
+.futures-vault > .corner-bl { position: absolute; bottom: 8px; left: 8px; width: 16px; height: 16px; border-bottom: 1.5px solid var(--purple-2); border-left: 1.5px solid var(--purple-2); }
+
+.futures-inner {
+  border-radius: 12px;
+  padding: 4px;
+}
+.futures-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px;
+}
+.futures-head .ttl { display: flex; flex-direction: column; gap: 3px; }
+.futures-head h2 {
+  font-size: 13px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; margin: 0; color: #fff;
+  display: flex; align-items: center; gap: 10px;
+}
+.futures-head .isolation-note {
+  font-family: var(--mono); font-size: 11px; color: var(--purple-2);
+  letter-spacing: .03em;
+}
+.futures-head .spacer { flex: 1; }
+
+.futures-body {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 20px;
+  padding: 6px 22px 22px;
+}
+.fut-stats { display: flex; flex-direction: column; gap: 12px; }
+.fut-stat {
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-inset); padding: 13px 15px;
+}
+.fut-stat .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.fut-stat .v { font-family: var(--mono); font-size: 21px; font-weight: 600; margin-top: 6px; }
+
+.chart-wrap { position: relative; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-inset); padding: 16px 8px 8px; }
+.chart-legend { display: flex; gap: 18px; padding: 0 14px 10px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.chart-legend .sw { width: 14px; height: 3px; border-radius: 2px; }
+.chart-legend .sw.bar { height: 11px; width: 7px; border-radius: 2px; }
+
+.chart-tip {
+  position: absolute; pointer-events: none; opacity: 0;
+  transform: translate(-50%, -120%);
+  background: #0a0d13; border: 1px solid var(--border-strong);
+  border-radius: 8px; padding: 8px 11px;
+  font-family: var(--mono); font-size: 11px; white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0,0,0,.6); z-index: 5;
+  transition: opacity .12s;
+}
+.chart-tip .t-date { color: var(--ink-3); font-size: 10px; }
+.chart-tip .t-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+
+/* ============================================================
+   Tooltip (generic hover on KPIs)
+   ============================================================ */
+.info-dot {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 1px solid var(--border-strong); color: var(--ink-3);
+  font-size: 9px; display: inline-grid; place-items: center; cursor: help;
+  font-family: var(--mono);
+}
+.tip {
+  position: relative;
+}
+.tip .tip-pop {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+  background: #0a0d13; border: 1px solid var(--border-strong);
+  border-radius: 8px; padding: 9px 12px; width: 210px;
+  font-family: var(--sans); font-size: 11px; line-height: 1.5; color: var(--ink-2);
+  opacity: 0; pointer-events: none; transition: .18s; z-index: 30;
+  box-shadow: 0 14px 40px rgba(0,0,0,.6);
+}
+.tip:hover .tip-pop { opacity: 1; transform: translateX(-50%); }
+
+/* ---------- Generic section placeholder views ---------- */
+.section-view { display: flex; flex-direction: column; gap: 22px; }
+.empty-note {
+  font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+  padding: 40px; text-align: center;
+}
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-inset);
+}
+.setting-row .sl { font-size: 13px; color: var(--ink); }
+.setting-row .ss { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+.toggle { width: 42px; height: 24px; border-radius: 20px; background: var(--bg-panel-2); border: 1px solid var(--border-strong); position: relative; cursor: pointer; flex: none; transition: .2s; }
+.toggle i { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--ink-3); transition: .2s; }
+.toggle.on { background: rgba(0,240,255,.18); border-color: var(--cyan); }
+.toggle.on i { left: 20px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+
+/* ============================================================
+   Mobile dock + compact topbar brand — hidden on desktop
+   ============================================================ */
+.topbar-brand { display: none; align-items: center; gap: 10px; }
+.tb-mark { width: 32px; height: 32px; flex: none; }
+.tb-mark svg { width: 32px; height: 32px; }
+.tb-name { font-size: 14px; letter-spacing: .12em; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.tb-name b { color: var(--cyan); font-weight: 700; }
+.mobile-dock { display: none; }
+
+/* ============================================================
+   Responsive
+   Desktop (>1280) is untouched. Below that, progressive reflow.
+   ============================================================ */
+
+/* Wide reflow (existing): 1024–1280 keeps the desktop shell but
+   relaxes the KPI + center grids so nothing is cramped. */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .center-grid { grid-template-columns: 1fr; }
+  .futures-body { grid-template-columns: 1fr; }
+  .fut-stats { flex-direction: row; flex-wrap: wrap; }
+  .fut-stat { flex: 1; min-width: 150px; }
+}
+
+/* ---------- TABLET 768–1024 : collapsible icon-rail sidebar ---------- */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .app { grid-template-columns: 64px 1fr; }
+
+  .sidebar {
+    position: fixed; left: 0; top: 0;
+    width: 64px; height: 100vh;
+    overflow: hidden; white-space: nowrap;
+    transition: width .22s cubic-bezier(.2,.8,.2,1);
+    z-index: 60;
+  }
+  .sidebar:hover, .sidebar:focus-within {
+    width: 252px;
+    box-shadow: 24px 0 70px -22px rgba(0,0,0,.85);
+  }
+  .brand { padding: 18px 0 18px 16px; }
+  .nav { padding: 14px 12px; }
+  .nav-item { padding: 11px 12px; min-height: 44px; }
+  .node-status { margin: 12px; padding: 12px; }
+
+  /* keep icons, fade the words until expanded */
+  .brand > div:last-child,
+  .brand-name, .brand-sub,
+  .nav-label,
+  .nav-item span, .nav-item .badge,
+  .node-status > div:last-child {
+    opacity: 0; transition: opacity .14s ease;
+  }
+  .sidebar:hover .brand > div:last-child,
+  .sidebar:hover .nav-label,
+  .sidebar:hover .nav-item span,
+  .sidebar:hover .nav-item .badge,
+  .sidebar:hover .node-status > div:last-child,
+  .sidebar:focus-within .brand > div:last-child,
+  .sidebar:focus-within .nav-label,
+  .sidebar:focus-within .nav-item span,
+  .sidebar:focus-within .nav-item .badge,
+  .sidebar:focus-within .node-status > div:last-child {
+    opacity: 1;
+  }
+
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .center-grid { grid-template-columns: 1fr; }
+  .futures-body { grid-template-columns: 1fr; }
+  .fut-stats { flex-direction: row; flex-wrap: wrap; }
+  .fut-stat { flex: 1; min-width: 150px; }
+  /* table can keep horizontal scroll if it needs to */
+  .inv-table { min-width: 640px; }
+}
+
+/* ---------- MOBILE < 768 : dock + stacked cards ---------- */
+@media (max-width: 767px) {
+  .app { grid-template-columns: 1fr; overflow-x: hidden; }
+  .sidebar { display: none; }
+  body { overflow-x: hidden; }
+
+  /* compact header → brand + clock only */
+  .topbar { padding: 11px 15px; gap: 12px; }
+  .topbar .crumb, .topbar h1, .topbar .pill { display: none; }
+  .topbar-brand { display: flex; }
+  .topbar .spacer { flex: 1; }
+  .clock { font-size: 11px; }
+
+  .content {
+    padding: 15px 13px calc(86px + env(safe-area-inset-bottom));
+    gap: 15px;
+  }
+
+  /* KPI → 2×2 */
+  .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 11px; }
+  .kpi { min-height: 0; padding: 14px 13px 0; }
+  .kpi-big, .kpi-big.cyan { font-size: 21px; margin-top: 9px; }
+  .kpi-sub { font-size: 11px; }
+  .kpi-foot { padding: 10px 0 13px; }
+  .kpi-label { font-size: 9.5px; }
+  .sources { gap: 7px; }
+  .source-chip { font-size: 10.5px; }
+  .source-name { white-space: nowrap; }
+  .source-state { font-size: 10px; }
+  /* VWAP gauge: keep only the centered status on narrow cards */
+  .vwap-marks { font-size: 10px; }
+  .vwap-marks span:first-child,
+  .vwap-marks span:last-child { display: none; }
+  .vwap-marks .now { margin: 0 auto; }
+
+  .center-grid { grid-template-columns: 1fr; gap: 15px; }
+  .futures-body { grid-template-columns: 1fr; padding: 4px 14px 16px; gap: 16px; }
+  .fut-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .futures-head { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+  .futures-head .isolation-note { font-size: 10px; }
+
+  /* sortable header tools wrap nicely */
+  .card-head { flex-wrap: wrap; row-gap: 10px; }
+  .table-foot { flex-wrap: wrap; gap: 8px 14px; }
+
+  /* ----- inventory TABLE → per-asset CARDS ----- */
+  .inv-table { min-width: 0; }
+  .inv-table thead { display: none; }
+  .inv-table, .inv-table tbody, .inv-table tr, .inv-table td { display: block; width: 100%; }
+  .inv-table tbody tr {
+    margin: 12px; padding: 14px 15px;
+    border: 1px solid var(--border); border-radius: 11px;
+    background: var(--bg-inset);
+  }
+  .inv-table tbody tr:hover { background: var(--bg-inset); }
+  .inv-table tbody td {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 0; border: 0; text-align: right; white-space: nowrap;
+    font-size: 12.5px;
+  }
+  .inv-table tbody td::before {
+    content: attr(data-label);
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3);
+    text-align: left; margin-right: 14px;
+  }
+  /* asset = card header (no label, full-width divider) */
+  .inv-table tbody td:first-child {
+    padding: 0 0 11px; margin-bottom: 9px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .inv-table tbody td:first-child::before { display: none; }
+  .inv-table tbody td:first-child .asset-cell { width: 100%; }
+  .pnl-cell { align-items: flex-end; }
+
+  /* ----- bottom dock ----- */
+  .mobile-dock {
+    display: flex; align-items: center; justify-content: space-around;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 100;
+    height: calc(66px + env(safe-area-inset-bottom));
+    padding: 0 6px env(safe-area-inset-bottom);
+    background: rgba(12,16,23,.94);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -10px 30px -12px rgba(0,0,0,.7);
+  }
+  .dock-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: 0; cursor: pointer;
+    color: var(--ink-3); font-family: var(--sans);
+    min-height: 44px; height: 66px; justify-content: center;
+    transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dock-tab .dock-lbl { font-size: 10px; letter-spacing: .02em; }
+  .dock-tab.on { color: var(--cyan); }
+  .dock-tab.on svg { filter: drop-shadow(0 0 7px var(--cyan)); }
+  .dock-tab:active { color: var(--ink); }
+
+  .dock-add {
+    flex: none; width: 58px; height: 58px; border-radius: 50%;
+    transform: translateY(-12px);
+    display: grid; place-items: center; cursor: pointer;
+    color: #06141b; background: linear-gradient(180deg, #5cf6ff, var(--cyan));
+    border: 4px solid var(--bg-deep);
+    box-shadow:
+      0 0 0 1px rgba(0,240,255,.45),
+      0 0 24px 2px rgba(0,240,255,.55),
+      0 10px 26px -6px rgba(0,240,255,.6);
+    transition: box-shadow .18s, transform .12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dock-add:active { transform: translateY(-12px) scale(.94); }
+  .dock-add.on {
+    box-shadow:
+      0 0 0 1px rgba(0,240,255,.7),
+      0 0 34px 5px rgba(0,240,255,.8),
+      0 10px 26px -6px rgba(0,240,255,.7);
+  }
+}
+
+/* very small phones — single-column KPI to avoid cramping */
+@media (max-width: 380px) {
+  .kpi-row { grid-template-columns: 1fr; }
+  .fut-stats { grid-template-columns: 1fr; }
+}
+
+  </style>
+<script src="/static/api-bridge.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  
+
+  <script src="/static/vendor/react.development.js"></script>
+  <script src="/static/vendor/react-dom.development.js"></script>
+  <script src="/static/vendor/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+;(function(){
+/* ============================================================
+   QUANTUM PMS — mock data + helpers
+   Exposed on window for cross-script (Babel) access.
+   ============================================================ */
+
+// ---- Asset accent colors ----
+const ASSET_COLORS = {
+  BTC:  { fg: '#F7931A', bg: 'rgba(247,147,26,.12)' },
+  WBTC: { fg: '#F7931A', bg: 'rgba(247,147,26,.12)' },
+  ETH:  { fg: '#8A9CFF', bg: 'rgba(138,156,255,.12)' },
+  WETH: { fg: '#8A9CFF', bg: 'rgba(138,156,255,.12)' },
+  USDC: { fg: '#2775CA', bg: 'rgba(39,117,202,.16)' },
+  USDT: { fg: '#26A17B', bg: 'rgba(38,161,123,.14)' },
+  ARB:  { fg: '#B24DFF', bg: 'rgba(157,0,255,.14)' },
+  SOL:  { fg: '#00F0FF', bg: 'rgba(0,240,255,.12)' },
+};
+
+// ---- Location/venue tags ----
+const LOCATIONS = {
+  BingX:    { color: '#00F0FF', label: 'BingX' },
+  Trezor:   { color: '#6EA8FF', label: 'Trezor' },
+  Arbitrum: { color: '#B24DFF', label: 'Arbitrum' },
+  Spot:     { color: '#9AA4B6', label: 'BingX Spot' },
+};
+
+// ---- Spot inventory (8 positions). avgCost = real VWAP, price = current market ----
+const INVENTORY = [
+  { id: 1, sym: 'BTC',  name: 'Bitcoin',        loc: 'Trezor',   qty: 0.9120,  avg: 54820.00, price: 68240.50 },
+  { id: 2, sym: 'WBTC', name: 'Wrapped BTC',    loc: 'Arbitrum', qty: 0.4680,  avg: 61240.00, price: 68190.00 },
+  { id: 3, sym: 'ETH',  name: 'Ethereum',       loc: 'BingX',    qty: 14.250,  avg: 2980.40,  price: 3548.75 },
+  { id: 4, sym: 'WETH', name: 'Wrapped ETH',    loc: 'Arbitrum', qty: 9.800,   avg: 3120.10,  price: 3547.20 },
+  { id: 5, sym: 'USDC', name: 'USD Coin',       loc: 'Arbitrum', qty: 18450.0, avg: 1.0000,   price: 1.0001 },
+  { id: 6, sym: 'ARB',  name: 'Arbitrum',       loc: 'Arbitrum', qty: 12400.0, avg: 1.1240,   price: 0.9180 },
+  { id: 7, sym: 'SOL',  name: 'Solana',         loc: 'BingX',    qty: 86.40,   avg: 142.30,   price: 168.90 },
+  { id: 8, sym: 'USDT', name: 'Tether',         loc: 'BingX',    qty: 9600.0,  avg: 1.0000,   price: 0.9998 },
+];
+
+// ---- Connected sources ----
+const SOURCES = [
+  { key: 'bingx',   name: 'BingX API',     state: 'ONLINE', color: '#39FF14', tag: 'green'  },
+  { key: 'arbitrum',name: 'Arbitrum DeFi', state: 'ACTIVE', color: '#B24DFF', tag: 'purple' },
+  { key: 'trezor',  name: 'Trezor Vault',  state: 'SECURE', color: '#6EA8FF', tag: 'cyan'   },
+];
+
+// ---- Event ledger pool (event sourcing) ----
+const EVENT_TYPES = {
+  'TRADE BUY':   { color: '#39FF14',  dot: '#39FF14' },
+  'TRADE SELL':  { color: '#FF3B5C',  dot: '#FF3B5C' },
+  'TRANSFER':    { color: '#00F0FF',  dot: '#00F0FF' },
+  'FUTURES PNL': { color: '#B24DFF',  dot: '#B24DFF' },
+  'SYNC':        { color: '#9AA4B6',  dot: '#9AA4B6' },
+  'CSV IMPORT':  { color: '#FFB020',  dot: '#FFB020' },
+};
+
+const SEED_EVENTS = [
+  { type: 'TRADE BUY',   parts: ['0.5 ETH bought @ BingX ', { mono: '(VWAP updated)' }],          ago: '12s' },
+  { type: 'TRANSFER',    parts: ['10,000 USDC moved to Arbitrum ', { mono: '(cost base preserved)' }], ago: '1m' },
+  { type: 'FUTURES PNL', parts: [{ mono: '+$450.00 USDT' }, ' realized ', { mono: '(isolated from Spot)' }], ago: '3m' },
+  { type: 'SYNC',        parts: ['BingX API snapshot reconciled ', { mono: '· 0 drift' }],         ago: '5m' },
+  { type: 'TRADE BUY',   parts: ['1.20 SOL bought @ BingX ', { mono: '(VWAP 142.30)' }],           ago: '8m' },
+  { type: 'TRANSFER',    parts: ['0.20 WBTC bridged to Arbitrum Pool'],                            ago: '14m' },
+  { type: 'CSV IMPORT',  parts: ['bingx_spot_may.csv ingested ', { mono: '· 84 fills' }],          ago: '22m' },
+  { type: 'TRADE SELL',  parts: ['320 ARB sold @ BingX ', { mono: '(realized −$48.10)' }],         ago: '31m' },
+  { type: 'FUTURES PNL', parts: [{ mono: '−$120.00 USDT' }, ' realized ', { mono: '(BTC-PERP)' }], ago: '46m' },
+  { type: 'SYNC',        parts: ['Trezor vault attestation verified'],                             ago: '1h' },
+];
+
+// Streamed-in events (prepended live)
+const LIVE_EVENT_POOL = [
+  { type: 'TRADE BUY',   parts: ['0.08 ETH bought @ BingX ', { mono: '(VWAP updated)' }] },
+  { type: 'FUTURES PNL', parts: [{ mono: '+$210.00 USDT' }, ' realized ', { mono: '(ETH-PERP, isolated)' }] },
+  { type: 'TRANSFER',    parts: ['2,500 USDC moved to Arbitrum ', { mono: '(cost base preserved)' }] },
+  { type: 'TRADE SELL',  parts: ['0.40 SOL sold @ BingX ', { mono: '(realized +$9.40)' }] },
+  { type: 'SYNC',        parts: ['BingX API heartbeat ', { mono: '· latency 41ms' }] },
+  { type: 'FUTURES PNL', parts: [{ mono: '−$65.00 USDT' }, ' realized ', { mono: '(BTC-PERP, isolated)' }] },
+  { type: 'TRANSFER',    parts: ['0.05 WBTC bridged to Arbitrum Pool'] },
+  { type: 'TRADE BUY',   parts: ['540 ARB bought @ BingX ', { mono: '(VWAP 0.918)' }] },
+];
+
+// ---- Futures isolated cash-flow series (last 14 sessions) ----
+// flow = realized PnL that session (bars); equity = cumulative isolated balance (line)
+const FUTURES_FLOW = [
+  { d: 'May 24', flow:  320 },
+  { d: 'May 25', flow: -180 },
+  { d: 'May 26', flow:  450 },
+  { d: 'May 27', flow:  210 },
+  { d: 'May 28', flow: -120 },
+  { d: 'May 29', flow:  680 },
+  { d: 'May 30', flow:  140 },
+  { d: 'May 31', flow: -260 },
+  { d: 'Jun 01', flow:  520 },
+  { d: 'Jun 02', flow:  390 },
+  { d: 'Jun 03', flow: -90  },
+  { d: 'Jun 04', flow:  610 },
+  { d: 'Jun 05', flow:  240 },
+  { d: 'Jun 06', flow:  450 },
+];
+// build cumulative equity starting from a base margin float
+(function () {
+  let base = 24500;
+  FUTURES_FLOW.forEach(p => { base += p.flow; p.equity = base; });
+})();
+
+const fmtUSD = (n, dp = 2) =>
+  '$' + n.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+const fmtNum = (n, dp = 2) =>
+  n.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+const fmtQty = (n) => {
+  if (n >= 1000) return n.toLocaleString('en-US', { maximumFractionDigits: 1 });
+  if (n >= 1)    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  return n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+};
+
+Object.assign(window, {
+  ASSET_COLORS, LOCATIONS, INVENTORY, SOURCES,
+  EVENT_TYPES, SEED_EVENTS, LIVE_EVENT_POOL, FUTURES_FLOW,
+  fmtUSD, fmtNum, fmtQty,
+});
+
+})();
+</script>
+
+<script type="text/babel" data-presets="react">
+;(function(){
+/* ============================================================
+   QUANTUM PMS — icon set (simple line glyphs) + brand mark
+   ============================================================ */
+const { createElement: h } = React;
+
+function Icon({ d, size = 18, fill = false, stroke = 1.6, children, vb = 24 }) {
+  return h('svg', {
+    width: size, height: size, viewBox: `0 0 ${vb} ${vb}`,
+    fill: fill ? 'currentColor' : 'none',
+    stroke: 'currentColor', strokeWidth: stroke,
+    strokeLinecap: 'round', strokeLinejoin: 'round',
+  }, children || h('path', { d }));
+}
+
+const Icons = {
+  dashboard: (p) => h(Icon, p, [
+    h('rect', { key: 1, x: 3, y: 3, width: 8, height: 8, rx: 1.5 }),
+    h('rect', { key: 2, x: 13, y: 3, width: 8, height: 5, rx: 1.5 }),
+    h('rect', { key: 3, x: 13, y: 10, width: 8, height: 11, rx: 1.5 }),
+    h('rect', { key: 4, x: 3, y: 13, width: 8, height: 8, rx: 1.5 }),
+  ]),
+  spot: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M3 7h18M3 12h18M3 17h18' }),
+    h('circle', { key: 2, cx: 7, cy: 7, r: 1.4, fill: 'currentColor', stroke: 'none' }),
+    h('circle', { key: 3, cx: 12, cy: 12, r: 1.4, fill: 'currentColor', stroke: 'none' }),
+    h('circle', { key: 4, cx: 17, cy: 17, r: 1.4, fill: 'currentColor', stroke: 'none' }),
+  ]),
+  hedge: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M12 3l7 3v5c0 4.2-2.8 7.6-7 9-4.2-1.4-7-4.8-7-9V6l7-3z' }),
+    h('path', { key: 2, d: 'M9 12l2 2 4-4' }),
+  ]),
+  api: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M4 7h16M4 12h16M4 17h10' }),
+    h('circle', { key: 2, cx: 18, cy: 17, r: 2.2 }),
+  ]),
+  settings: (p) => h(Icon, p, [
+    h('circle', { key: 1, cx: 12, cy: 12, r: 3 }),
+    h('path', { key: 2, d: 'M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1' }),
+  ]),
+  wallet: (p) => h(Icon, p, [
+    h('rect', { key: 1, x: 3, y: 6, width: 18, height: 13, rx: 2 }),
+    h('path', { key: 2, d: 'M3 9h18M16 13h2' }),
+  ]),
+  gauge: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M4 18a8 8 0 1116 0' }),
+    h('path', { key: 2, d: 'M12 18l4-4' }),
+  ]),
+  shield: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M12 3l7 3v5c0 4.2-2.8 7.6-7 9-4.2-1.4-7-4.8-7-9V6l7-3z' }),
+  ]),
+  plug: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M9 2v5M15 2v5M7 7h10v3a5 5 0 01-10 0V7zM12 15v6' }),
+  ]),
+  upload: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M12 16V4M7 9l5-5 5 5' }),
+    h('path', { key: 2, d: 'M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3' }),
+  ]),
+  lock: (p) => h(Icon, p, [
+    h('rect', { key: 1, x: 5, y: 11, width: 14, height: 9, rx: 2 }),
+    h('path', { key: 2, d: 'M8 11V8a4 4 0 018 0v3' }),
+  ]),
+  check: (p) => h(Icon, p, [ h('path', { key: 1, d: 'M4 12l5 5L20 6' }) ]),
+  file: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M6 2h8l4 4v16H6z' }),
+    h('path', { key: 2, d: 'M14 2v4h4' }),
+  ]),
+  plus: (p) => h(Icon, p, [ h('path', { key: 1, d: 'M12 5v14M5 12h14' }) ]),
+};
+
+function BrandMark() {
+  return h('svg', { width: 34, height: 34, viewBox: '0 0 34 34', fill: 'none' }, [
+    h('rect', { key: 'b', x: 1, y: 1, width: 32, height: 32, rx: 9, stroke: '#1E232F', strokeWidth: 1.5 }),
+    h('path', { key: 'q', d: 'M17 6l9 5.2v10.4L17 27l-9-5.2V11.2L17 6z', stroke: '#00F0FF', strokeWidth: 1.4, fill: 'rgba(0,240,255,.05)' }),
+    h('path', { key: 'i', d: 'M17 12l5 3v6l-5 3-5-3v-6l5-3z', stroke: '#9D00FF', strokeWidth: 1.3, fill: 'none' }),
+    h('circle', { key: 'c', cx: 17, cy: 18, r: 1.8, fill: '#00F0FF' }),
+  ]);
+}
+
+Object.assign(window, { Icon, Icons, BrandMark });
+
+})();
+</script>
+
+<script type="text/babel" data-presets="react">
+;(function(){
+/* ============================================================
+   QUANTUM PMS — Sidebar, Topbar, KPI cards, Inventory table
+   ============================================================ */
+const { createElement: h, useState, useEffect, useRef, useMemo } = React;
+
+/* ----------------------------- Sidebar ----------------------------- */
+const NAV = [
+  { key: 'dashboard', label: 'Dashboard',           icon: 'dashboard' },
+  { key: 'spot',      label: 'Inventario Spot',      icon: 'spot', badge: '8' },
+  { key: 'hedge',     label: 'Coberturas · Futuros', icon: 'hedge' },
+  { key: 'apis',      label: 'Gestión APIs / CSV',   icon: 'api' },
+  { key: 'settings',  label: 'Configuración',        icon: 'settings' },
+];
+
+function Sidebar({ active, onNav }) {
+  return h('aside', { className: 'sidebar' }, [
+    h('div', { className: 'brand', key: 'brand' }, [
+      h('div', { className: 'brand-mark', key: 'm' }, h(BrandMark)),
+      h('div', { key: 't' }, [
+        h('div', { className: 'brand-name', key: 'n' }, ['QUANTUM ', h('b', { key: 'b' }, 'PMS')]),
+        h('div', { className: 'brand-sub', key: 's' }, 'Portfolio Terminal'),
+      ]),
+    ]),
+    h('nav', { className: 'nav', key: 'nav' }, [
+      h('div', { className: 'nav-label', key: 'l1' }, 'Operación'),
+      ...NAV.map(item =>
+        h('div', {
+          key: item.key,
+          className: 'nav-item' + (active === item.key ? ' active' : ''),
+          onClick: () => onNav(item.key),
+          tabIndex: 0,
+          role: 'button',
+          'aria-label': item.label,
+          onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNav(item.key); } },
+        }, [
+          Icons[item.icon]({ key: 'i', size: 18 }),
+          h('span', { key: 'l' }, item.label),
+          item.badge ? h('span', { className: 'badge', key: 'b' }, item.badge) : null,
+        ])
+      ),
+    ]),
+    h('div', { className: 'node-status', key: 'node' }, [
+      h('div', { className: 'pulse', key: 'p' }),
+      h('div', { key: 'x' }, [
+        h('div', { className: 'label', key: 'l' }, 'Nicaragua Node'),
+        h('div', { className: 'sub', key: 's' }, 'CONNECTED · 41ms'),
+      ]),
+    ]),
+  ]);
+}
+
+/* ----------------------------- Topbar ----------------------------- */
+const SECTION_TITLES = {
+  dashboard: 'Dashboard',
+  spot: 'Inventario Spot',
+  hedge: 'Coberturas · Futuros',
+  apis: 'Gestión de APIs / CSV',
+  settings: 'Configuración',
+};
+
+function Topbar({ active }) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const time = now.toLocaleTimeString('en-GB', { hour12: false });
+  return h('div', { className: 'topbar' }, [
+    h('div', { className: 'topbar-brand', key: 'tb' }, [
+      h('div', { className: 'tb-mark', key: 'm' }, h(BrandMark)),
+      h('span', { className: 'tb-name', key: 'n' }, ['QUANTUM ', h('b', { key: 'b' }, 'PMS')]),
+    ]),
+    h('span', { className: 'crumb', key: 'c' }, 'QUANTUM ·'),
+    h('h1', { key: 'h' }, SECTION_TITLES[active]),
+    h('div', { className: 'spacer', key: 'sp' }),
+    h('span', { className: 'pill', key: 'p1' }, [
+      h('span', { className: 'dot', key: 'd', style: { background: '#39FF14', boxShadow: '0 0 8px #39FF14' } }),
+      'Mercado abierto',
+    ]),
+    h('span', { className: 'clock', key: 'cl' }, ['UTC ', h('b', { key: 'b' }, time)]),
+  ]);
+}
+
+/* ----------------------------- KPI cards ----------------------------- */
+function Kpi({ accent, icon, label, tip, children, foot }) {
+  return h('div', { className: 'kpi', style: { '--accent': accent } }, [
+    h('div', { className: 'kpi-glow', key: 'g' }),
+    h('div', { className: 'kpi-top', key: 't' }, [
+      h('div', { className: 'kpi-label tip', key: 'l' }, [
+        label,
+        tip ? h('span', { className: 'tip-pop', key: 'tp' }, tip) : null,
+      ]),
+      h('div', { className: 'kpi-ico', key: 'i' }, Icons[icon]({ size: 17 })),
+    ]),
+    children,
+    foot ? h('div', { className: 'kpi-foot', key: 'f' }, foot) : null,
+  ]);
+}
+
+function Sparkline({ data, color, w = 120, hgt = 30 }) {
+  const min = Math.min(...data), max = Math.max(...data);
+  const rng = max - min || 1;
+  const pts = data.map((v, i) => [
+    (i / (data.length - 1)) * w,
+    hgt - ((v - min) / rng) * hgt,
+  ]);
+  const dPath = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const area = dPath + `L${w} ${hgt} L0 ${hgt} Z`;
+  const gid = 'sp' + color.replace(/[^a-z0-9]/gi, '');
+  return h('svg', { width: w, height: hgt, style: { display: 'block' } }, [
+    h('defs', { key: 'd' }, h('linearGradient', { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 }, [
+      h('stop', { key: 1, offset: 0, stopColor: color, stopOpacity: .35 }),
+      h('stop', { key: 2, offset: 1, stopColor: color, stopOpacity: 0 }),
+    ])),
+    h('path', { key: 'a', d: area, fill: `url(#${gid})` }),
+    h('path', { key: 'l', d: dPath, fill: 'none', stroke: color, strokeWidth: 1.6 }),
+  ]);
+}
+
+function KpiRow({ totals, sparks }) {
+  const { netUSD, netBTC, deltaPct, vwapPct, marginUSD, marginPct } = totals;
+  const inProfit = vwapPct >= 0;
+  // vwap fill: map -10%..+30% to 0..100
+  const fill = Math.max(4, Math.min(100, ((vwapPct + 10) / 40) * 100));
+
+  return h('div', { className: 'kpi-row' }, [
+    // 1 — Balance Total Neto
+    h(Kpi, {
+      key: 'k1', accent: '#00F0FF', icon: 'wallet', label: 'Balance Total Neto',
+      tip: 'Suma del valor de mercado de todo el inventario Spot, en todas las ubicaciones (BingX, Trezor, Arbitrum).',
+      foot: [
+        h('span', { className: deltaPct >= 0 ? 'tag green' : 'tag red', key: 't' },
+          (deltaPct >= 0 ? '▲ ' : '▼ ') + Math.abs(deltaPct).toFixed(2) + '%'),
+        h('span', { key: 's', style: { color: 'var(--ink-3)' } }, 'hoy'),
+      ],
+    }, [
+      h('div', { className: 'kpi-big cyan', key: 'b' }, fmtUSD(netUSD)),
+      h('div', { className: 'kpi-sub', key: 's' }, [
+        h('span', { key: 'eq', style: { color: 'var(--ink-3)' } }, '≈'),
+        h('span', { key: 'v' }, fmtNum(netBTC, 4) + ' BTC'),
+      ]),
+    ]),
+
+    // 2 — VWAP general
+    h(Kpi, {
+      key: 'k2', accent: '#39FF14', icon: 'gauge', label: 'Estado VWAP General',
+      tip: 'Compara el precio promedio real de compra (VWAP) contra el precio actual de mercado, agregado por valor.',
+    }, [
+      h('div', { className: 'kpi-big', key: 'b', style: { color: inProfit ? 'var(--green)' : 'var(--red)', textShadow: inProfit ? '0 0 22px rgba(57,255,20,.3)' : '0 0 22px rgba(255,59,92,.3)' } },
+        (inProfit ? '+' : '') + vwapPct.toFixed(2) + '%'),
+      h('div', { className: 'vwap-gauge', key: 'g' }, [
+        h('div', { className: 'vwap-bar', key: 'bar' }, h('div', { className: 'vwap-fill', style: { width: fill + '%' } })),
+        h('div', { className: 'vwap-marks', key: 'm' }, [
+          h('span', { key: 'a' }, 'VWAP'),
+          h('span', { className: 'now', key: 'b' }, inProfit ? 'En Ganancia Base' : 'Bajo coste'),
+          h('span', { key: 'c' }, 'Mkt'),
+        ]),
+      ]),
+    ]),
+
+    // 3 — Margen de cobertura
+    h(Kpi, {
+      key: 'k3', accent: '#9D00FF', icon: 'shield', label: 'Margen Cobertura · Futuros',
+      tip: 'Saldo líquido AISLADO disponible para los bots de futuros. No forma parte del inventario Spot.',
+      foot: [
+        h('span', { className: 'tag purple', key: 't' }, [Icons.lock({ key: 'i', size: 11 }), 'AISLADO']),
+        h('span', { key: 's', style: { color: 'var(--ink-3)' } }, 'no afecta Spot'),
+      ],
+    }, [
+      h('div', { className: 'kpi-big', key: 'b', style: { color: 'var(--purple-2)' } }, fmtUSD(marginUSD)),
+      h('div', { className: 'kpi-sub', key: 's' }, [
+        h('span', { key: 'v', className: marginPct >= 0 ? 'pnl-pos' : 'pnl-neg' },
+          (marginPct >= 0 ? '+' : '') + marginPct.toFixed(1) + '% margen libre'),
+      ]),
+    ]),
+
+    // 4 — Fuentes conectadas
+    h(Kpi, {
+      key: 'k4', accent: '#6EA8FF', icon: 'plug', label: 'Fuentes Conectadas',
+      tip: 'Estado en vivo de cada origen de datos sincronizado con el motor de inventario.',
+    }, [
+      h('div', { className: 'sources', key: 's' }, SOURCES.map(s =>
+        h('div', { className: 'source-chip', key: s.key }, [
+          h('div', { className: 'source-orb', key: 'o', style: { color: s.color, background: s.color + '22' } },
+            h('span', { className: 'pulse-mini', style: { width: 7, height: 7, borderRadius: '50%', background: s.color, boxShadow: `0 0 6px ${s.color}` } })),
+          h('span', { className: 'source-name', key: 'n' }, s.name),
+          h('span', { className: 'source-state', key: 'st', style: { color: s.color } }, s.state),
+        ])
+      )),
+    ]),
+  ]);
+}
+
+/* ----------------------------- Inventory table ----------------------------- */
+const COLS = [
+  { key: 'sym',   label: 'Activo',        align: 'left' },
+  { key: 'loc',   label: 'Ubicación',     align: 'left' },
+  { key: 'qty',   label: 'Cantidad',      align: 'right' },
+  { key: 'avg',   label: 'VWAP Real',     align: 'right' },
+  { key: 'price', label: 'Mkt Actual',    align: 'right' },
+  { key: 'pnl',   label: 'PnL No Realiz.',align: 'right' },
+];
+
+function LocTag({ loc }) {
+  const L = LOCATIONS[loc];
+  return h('span', { className: 'loc-tag', style: { color: L.color } }, [
+    h('span', { className: 'ld', key: 'd', style: { background: L.color, boxShadow: `0 0 6px ${L.color}` } }),
+    h('span', { key: 'l', style: { color: 'var(--ink-2)' } }, L.label),
+  ]);
+}
+
+function AssetCell({ row }) {
+  const c = ASSET_COLORS[row.sym] || { fg: '#9AA4B6', bg: 'rgba(255,255,255,.05)' };
+  return h('div', { className: 'asset-cell' }, [
+    h('div', { className: 'asset-ico', key: 'i', style: { color: c.fg, background: c.bg, borderColor: c.fg + '33' } }, row.sym.slice(0, 2)),
+    h('div', { className: 'asset-meta', key: 'm' }, [
+      h('div', { className: 'asset-sym', key: 's' }, row.sym),
+      h('div', { className: 'asset-full', key: 'f' }, row.name),
+    ]),
+  ]);
+}
+
+function InventoryTable({ rows, filter, onFilter, sort, onSort, flashMap }) {
+  return h('div', { className: 'card', style: { overflow: 'hidden' } }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      h('h2', { key: 't' }, 'Spot Inventory · Real VWAP Engine'),
+      h('span', { className: 'hint', key: 'hint' }, 'rastreo cross-venue'),
+      h('div', { className: 'spacer', key: 'sp' }),
+      h('div', { className: 'seg', key: 'seg' }, ['Todos', 'BingX', 'Trezor', 'Arbitrum'].map(f =>
+        h('button', { key: f, className: filter === f ? 'on' : '', onClick: () => onFilter(f) }, f)
+      )),
+    ]),
+    h('div', { key: 'tw', style: { overflowX: 'auto' } }, h('table', { className: 'inv-table' }, [
+      h('thead', { key: 'h' }, h('tr', {}, COLS.map(c =>
+        h('th', {
+          key: c.key,
+          className: sort.key === c.key ? 'sorted' : '',
+          style: { textAlign: c.align },
+          onClick: () => onSort(c.key),
+        }, [c.label, h('span', { className: 'arrow', key: 'a' }, sort.dir === 'asc' ? '▲' : '▼')])
+      ))),
+      h('tbody', { key: 'b' }, rows.map(row => {
+        const value = row.qty * row.price;
+        const cost = row.qty * row.avg;
+        const pnl = value - cost;
+        const pnlPct = (pnl / cost) * 100;
+        const pos = pnl >= 0;
+        const flash = flashMap[row.id];
+        return h('tr', { key: row.id }, [
+          h('td', { key: 'a', 'data-label': 'Activo' }, h(AssetCell, { row })),
+          h('td', { key: 'l', 'data-label': 'Ubicación' }, h(LocTag, { loc: row.loc })),
+          h('td', { key: 'q', 'data-label': 'Cantidad' }, fmtQty(row.qty)),
+          h('td', { key: 'v', 'data-label': 'VWAP Real', style: { color: 'var(--ink-2)' } }, fmtUSD(row.avg, row.avg < 10 ? 4 : 2)),
+          h('td', { key: 'p', 'data-label': 'Mkt Actual', className: flash ? (flash === 'up' ? 'num-flash-up' : 'num-flash-down') : '' },
+            fmtUSD(row.price, row.price < 10 ? 4 : 2)),
+          h('td', { key: 'pnl', 'data-label': 'PnL No Realiz.' }, h('span', { className: 'pnl-cell ' + (pos ? 'pnl-pos' : 'pnl-neg') }, [
+            h('span', { key: 'a' }, (pos ? '+' : '−') + fmtUSD(Math.abs(pnl)).slice(1)),
+            h('span', { className: 'pnl-pct', key: 'b' }, (pos ? '+' : '') + pnlPct.toFixed(2) + '%'),
+          ])),
+        ]);
+      })),
+    ])),
+    (function () {
+      const totVal = rows.reduce((s, r) => s + r.qty * r.price, 0);
+      const totCost = rows.reduce((s, r) => s + r.qty * r.avg, 0);
+      const totPnl = totVal - totCost;
+      const pos = totPnl >= 0;
+      return h('div', { className: 'table-foot', key: 'f' }, [
+        h('span', { key: 'n' }, [rows.length + ' activos · valor '] ),
+        h('b', { key: 'v' }, fmtUSD(totVal)),
+        h('div', { className: 'spacer', key: 'sp' }),
+        h('span', { key: 'l', style: { color: 'var(--ink-3)' } }, 'PnL no realizado agregado'),
+        h('span', { key: 'p', className: pos ? 'pnl-pos' : 'pnl-neg', style: { fontWeight: 600 } },
+          (pos ? '+' : '−') + fmtUSD(Math.abs(totPnl)).slice(1)),
+      ]);
+    })(),
+  ]);
+}
+
+Object.assign(window, { Sidebar, Topbar, KpiRow, InventoryTable });
+
+})();
+</script>
+
+<script type="text/babel" data-presets="react">
+;(function(){
+/* ============================================================
+   QUANTUM PMS — Ingestion (CSV drop), Event log, Futures chart
+   ============================================================ */
+const { createElement: h, useState, useEffect, useRef } = React;
+
+/* ----------------------------- CSV Dropzone ----------------------------- */
+function Dropzone({ onIngest }) {
+  const [drag, setDrag] = useState(false);
+  const [progress, setProgress] = useState(null);   // 0..100 or null
+  const [files, setFiles] = useState([]);
+  const inputRef = useRef(null);
+
+  const runImport = (file) => {
+    const fname = file ? file.name : `bingx_export_${Math.floor(Math.random() * 900 + 100)}.csv`;
+    setProgress(0);
+    let p = 0;
+    const t = setInterval(() => {
+      p += Math.random() * 16 + 6;
+      if (p >= 100) {
+        p = 100;
+        clearInterval(t);
+        setProgress(100);
+        const finish = (fills) => setTimeout(() => {
+          setProgress(null);
+          setFiles(f => [{ name: fname, fills }, ...f].slice(0, 3));
+          onIngest && onIngest(fname, fills);
+        }, 350);
+        if (file) {
+          const form = new FormData();
+          form.append('file', file);
+          fetch('/api/import/csv', { method: 'POST', body: form })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => finish(data && data.fills ? data.fills : Math.floor(Math.random() * 80 + 20)))
+            .catch(() => finish(Math.floor(Math.random() * 80 + 20)));
+        } else {
+          finish(Math.floor(Math.random() * 80 + 20));
+        }
+      } else {
+        setProgress(p);
+      }
+    }, 130);
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setDrag(false);
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    runImport(f || null);
+  };
+
+  return h('div', { className: 'card', key: 'dz' }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      h('h2', { key: 't' }, 'Data Ingestion'),
+      h('span', { className: 'hint', key: 'hint' }, 'event-sourced'),
+    ]),
+    h('div', {
+      key: 'zone',
+      className: 'dropzone' + (drag ? ' drag' : ''),
+      onDragOver: (e) => { e.preventDefault(); setDrag(true); },
+      onDragLeave: () => setDrag(false),
+      onDrop,
+      onClick: () => inputRef.current && inputRef.current.click(),
+    }, [
+      h('input', { key: 'in', ref: inputRef, type: 'file', accept: '.csv', style: { display: 'none' },
+        onChange: (e) => { const f = e.target.files[0]; if (f) runImport(f); e.target.value = ''; } }),
+      h('div', { className: 'dz-ico', key: 'i' }, Icons.upload({ size: 24 })),
+      h('div', { className: 'dz-main', key: 'm' }, 'Drop BingX / Generic CSV here'),
+      h('div', { className: 'dz-sub', key: 's' }, drag ? 'Suelta para procesar…' : 'o haz clic para seleccionar archivo'),
+    ]),
+    h('div', { key: 'pg', className: 'dz-progress' + (progress !== null ? ' show' : '') },
+      h('i', { style: { width: (progress || 0) + '%' } })),
+    files.length ? h('div', { className: 'dz-files', key: 'f' }, files.map((f, i) =>
+      h('div', { className: 'dz-file', key: i }, [
+        Icons.file({ key: 'ic', size: 14 }),
+        h('span', { key: 'n', style: { color: 'var(--ink)' } }, f.name),
+        h('span', { className: 'ok', key: 'o' }, `${f.fills} fills ✓`),
+      ])
+    )) : null,
+  ]);
+}
+
+/* ----------------------------- Event Log ----------------------------- */
+function EventLog({ events }) {
+  return h('div', { className: 'card', key: 'log' }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      h('h2', { key: 't' }, 'Event Sourcing Ledger'),
+      h('div', { className: 'spacer', key: 'sp' }),
+      h('span', { className: 'tag green', key: 'live' }, [
+        h('span', { key: 'd', style: { width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 6px var(--green)', display: 'inline-block' } }),
+        'LIVE',
+      ]),
+    ]),
+    h('div', { className: 'log-feed', key: 'feed' }, events.map((ev, i) => {
+      const t = EVENT_TYPES[ev.type];
+      return h('div', { className: 'log-item' + (ev.fresh ? ' fresh' : ''), key: ev.uid }, [
+        h('div', { className: 'log-rail', key: 'r' }, [
+          h('div', { className: 'log-dot', key: 'd', style: { background: t.dot, boxShadow: `0 0 7px ${t.dot}` } }),
+          i < events.length - 1 ? h('div', { className: 'log-line-v', key: 'v' }) : null,
+        ]),
+        h('div', { className: 'log-body', key: 'b' }, [
+          h('div', { className: 'log-type', key: 't', style: { color: t.color } }, '[' + ev.type + ']'),
+          h('div', { className: 'log-msg', key: 'm' }, ev.parts.map((p, j) =>
+            typeof p === 'string' ? p : h('span', { className: 'mono', key: j, style: { color: 'var(--ink-2)' } }, p.mono)
+          )),
+          h('div', { className: 'log-time', key: 'tm' }, ev.ago + ' ago'),
+        ]),
+      ]);
+    })),
+  ]);
+}
+
+/* ----------------------------- Futures Chart ----------------------------- */
+function FuturesChart({ data }) {
+  const ref = useRef(null);
+  const [tip, setTip] = useState(null);
+  const W = 760, H = 240, padL = 8, padR = 8, padT = 14, padB = 26;
+  const iw = W - padL - padR, ih = H - padT - padB;
+
+  const flows = data.map(d => d.flow);
+  const eqs = data.map(d => d.equity);
+  const maxFlow = Math.max(...flows.map(Math.abs)) || 1;
+  const minEq = Math.min(...eqs), maxEq = Math.max(...eqs);
+  const eqRng = (maxEq - minEq) || 1;
+
+  const n = data.length;
+  const slot = iw / n;
+  const barW = slot * 0.42;
+  const zeroY = padT + ih * 0.62; // baseline for bars (PnL +/-)
+
+  const x = (i) => padL + slot * i + slot / 2;
+  const eqY = (v) => padT + ih - ((v - minEq) / eqRng) * (ih * 0.86) - 6;
+
+  const linePts = data.map((d, i) => [x(i), eqY(d.equity)]);
+  const lineD = linePts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const areaD = lineD + ` L${x(n - 1).toFixed(1)} ${padT + ih} L${x(0).toFixed(1)} ${padT + ih} Z`;
+
+  const handleMove = (e) => {
+    const rect = ref.current.getBoundingClientRect();
+    const px = (e.clientX - rect.left) * (W / rect.width);
+    let idx = Math.round((px - padL - slot / 2) / slot);
+    idx = Math.max(0, Math.min(n - 1, idx));
+    setTip({ idx, left: (x(idx) / W) * rect.width, top: (eqY(data[idx].equity) / H) * rect.height });
+  };
+
+  return h('div', { className: 'chart-wrap', key: 'cw' }, [
+    h('div', { className: 'chart-legend', key: 'lg' }, [
+      h('span', { key: 'e' }, [h('span', { className: 'sw', key: 's', style: { background: '#00F0FF', boxShadow: '0 0 8px #00F0FF' } }), 'Equity aislado (acum.)']),
+      h('span', { key: 'p' }, [h('span', { className: 'sw bar', key: 's', style: { background: '#39FF14' } }), 'PnL sesión +']),
+      h('span', { key: 'n' }, [h('span', { className: 'sw bar', key: 's', style: { background: '#FF3B5C' } }), 'PnL sesión −']),
+    ]),
+    h('svg', {
+      key: 'svg', ref, viewBox: `0 0 ${W} ${H}`, width: '100%',
+      style: { display: 'block', overflow: 'visible' },
+      onMouseMove: handleMove, onMouseLeave: () => setTip(null),
+    }, [
+      h('defs', { key: 'defs' }, [
+        h('linearGradient', { key: 'eq', id: 'eqGrad', x1: 0, y1: 0, x2: 0, y2: 1 }, [
+          h('stop', { key: 1, offset: 0, stopColor: '#00F0FF', stopOpacity: .28 }),
+          h('stop', { key: 2, offset: 1, stopColor: '#00F0FF', stopOpacity: 0 }),
+        ]),
+      ]),
+      // gridlines
+      ...[0.25, 0.5, 0.75].map((g, i) =>
+        h('line', { key: 'g' + i, x1: padL, x2: W - padR, y1: padT + ih * g, y2: padT + ih * g, stroke: '#161B25', strokeWidth: 1 })),
+      // zero baseline
+      h('line', { key: 'z', x1: padL, x2: W - padR, y1: zeroY, y2: zeroY, stroke: '#2A3242', strokeWidth: 1, strokeDasharray: '3 3' }),
+      // bars
+      ...data.map((d, i) => {
+        const hgt = (Math.abs(d.flow) / maxFlow) * (ih * 0.32);
+        const pos = d.flow >= 0;
+        const by = pos ? zeroY - hgt : zeroY;
+        const col = pos ? '#39FF14' : '#FF3B5C';
+        const hot = tip && tip.idx === i;
+        return h('rect', {
+          key: 'b' + i, x: x(i) - barW / 2, y: by, width: barW, height: Math.max(2, hgt),
+          rx: 2, fill: col, opacity: hot ? 1 : .62,
+          style: hot ? { filter: `drop-shadow(0 0 6px ${col})` } : null,
+        });
+      }),
+      // equity area + line
+      h('path', { key: 'area', d: areaD, fill: 'url(#eqGrad)' }),
+      h('path', { key: 'line', d: lineD, fill: 'none', stroke: '#00F0FF', strokeWidth: 2, style: { filter: 'drop-shadow(0 0 6px rgba(0,240,255,.5))' } }),
+      // points
+      ...linePts.map((p, i) => h('circle', {
+        key: 'pt' + i, cx: p[0], cy: p[1], r: tip && tip.idx === i ? 4.5 : 2.5,
+        fill: '#0B0E14', stroke: '#00F0FF', strokeWidth: 1.6,
+      })),
+      // x labels (every other)
+      ...data.map((d, i) => i % 2 === 1 ? h('text', {
+        key: 'x' + i, x: x(i), y: H - 8, fill: '#5E6877', fontSize: 9,
+        textAnchor: 'middle', fontFamily: 'IBM Plex Mono',
+      }, d.d) : null),
+      tip ? h('line', { key: 'cur', x1: x(tip.idx), x2: x(tip.idx), y1: padT, y2: padT + ih, stroke: '#00F0FF', strokeWidth: 1, strokeOpacity: .3 }) : null,
+    ]),
+    tip ? h('div', {
+      key: 'tip', className: 'chart-tip', style: { left: tip.left, top: tip.top, opacity: 1 },
+    }, [
+      h('div', { className: 't-date', key: 'd' }, data[tip.idx].d),
+      h('div', { className: 't-row', key: 'e' }, [
+        h('span', { key: 's', style: { width: 8, height: 2, background: '#00F0FF', display: 'inline-block' } }),
+        h('span', { key: 'l', style: { color: 'var(--ink-3)' } }, 'Equity '),
+        h('span', { key: 'v', style: { color: '#00F0FF' } }, fmtUSD(data[tip.idx].equity)),
+      ]),
+      h('div', { className: 't-row', key: 'p' }, [
+        h('span', { key: 'l', style: { color: 'var(--ink-3)' } }, 'PnL sesión '),
+        h('span', { key: 'v', style: { color: data[tip.idx].flow >= 0 ? '#39FF14' : '#FF3B5C' } },
+          (data[tip.idx].flow >= 0 ? '+' : '−') + fmtUSD(Math.abs(data[tip.idx].flow))),
+      ]),
+    ]) : null,
+  ]);
+}
+
+function FuturesVault({ data }) {
+  const realizedTotal = data.reduce((s, d) => s + d.flow, 0);
+  const wins = data.filter(d => d.flow > 0).length;
+  const winRate = (wins / data.length) * 100;
+  const equity = data[data.length - 1].equity;
+
+  return h('div', { className: 'section-block', key: 'fv' }, [
+    h('div', { className: 'seg-divider', key: 'div' }, [
+      h('div', { className: 'ln', key: 'l1' }),
+      h('div', { className: 'lbl', key: 'lbl' }, [Icons.lock({ size: 13, key: 'ico' }), h('span', { key: 'txt' }, 'Zona segregada · Capital de futuros aislado')]),
+      h('div', { className: 'ln', key: 'l2' }),
+    ]),
+    h('div', { className: 'futures-vault', key: 'vault' }, [
+      h('div', { className: 'corner-tr', key: 'tr' }),
+      h('div', { className: 'corner-bl', key: 'bl' }),
+      h('div', { className: 'futures-inner', key: 'inner' }, [
+        h('div', { className: 'futures-head', key: 'head' }, [
+          h('div', { className: 'ttl', key: 't' }, [
+            h('h2', { key: 'h' }, [Icons.hedge({ key: 'i', size: 16 }), 'Segregación de Futuros · BingX']),
+            h('div', { className: 'isolation-note', key: 'n' }, 'Flujo de caja aislado — no altera la matemática del inventario Spot'),
+          ]),
+          h('div', { className: 'spacer', key: 'sp' }),
+          h('span', { className: 'tag purple', key: 'tag' }, [Icons.lock({ key: 'i', size: 11 }), 'ISOLATED MARGIN']),
+        ]),
+        h('div', { className: 'futures-body', key: 'body' }, [
+          h('div', { className: 'fut-stats', key: 'stats' }, [
+            h('div', { className: 'fut-stat', key: 's1' }, [
+              h('div', { className: 'l', key: 'l' }, 'Equity aislado'),
+              h('div', { className: 'v', key: 'v', style: { color: '#00F0FF' } }, fmtUSD(equity)),
+            ]),
+            h('div', { className: 'fut-stat', key: 's2' }, [
+              h('div', { className: 'l', key: 'l' }, 'PnL realizado · 14d'),
+              h('div', { className: 'v', key: 'v', style: { color: realizedTotal >= 0 ? '#39FF14' : '#FF3B5C' } },
+                (realizedTotal >= 0 ? '+' : '−') + fmtUSD(Math.abs(realizedTotal))),
+            ]),
+            h('div', { className: 'fut-stat', key: 's3' }, [
+              h('div', { className: 'l', key: 'l' }, 'Win rate · sesiones'),
+              h('div', { className: 'v', key: 'v', style: { color: '#E7ECF5' } }, winRate.toFixed(0) + '%'),
+            ]),
+            h('div', { className: 'fut-stat', key: 's4', style: { borderColor: 'rgba(157,0,255,.3)', background: 'rgba(157,0,255,.05)' } }, [
+              h('div', { className: 'l', key: 'l', style: { color: 'var(--purple-2)' } }, 'Transferido a Spot'),
+              h('div', { className: 'v', key: 'v', style: { color: 'var(--purple-2)' } }, '$0.00'),
+              h('div', { key: 'n', style: { fontFamily: 'var(--mono)', fontSize: 9.5, color: 'var(--ink-3)', marginTop: 4 } }, 'cero contaminación de coste'),
+            ]),
+          ]),
+          h(FuturesChart, { key: 'chart', data }),
+        ]),
+      ]),
+    ]),
+  ]);
+}
+
+Object.assign(window, { Dropzone, EventLog, FuturesChart, FuturesVault });
+
+})();
+</script>
+
+<script type="text/babel" data-presets="react">
+;(function(){
+/* ============================================================
+   QUANTUM PMS — App root, live engine, section routing
+   ============================================================ */
+const { createElement: h, useState, useEffect, useMemo } = React;
+
+let UID = 1000;
+function seedEvents() {
+  return SEED_EVENTS.map(e => ({ ...e, uid: UID++, fresh: false }));
+}
+
+function App() {
+  const [active, setActive] = useState('dashboard');
+  const [rows, setRows] = useState(() => INVENTORY.map(r => ({ ...r })));
+  const [futuresData, setFuturesData] = useState(() => FUTURES_FLOW.map(r => ({ ...r })));
+  const [flashMap, setFlashMap] = useState({});
+  const [filter, setFilter] = useState('Todos');
+  const [sort, setSort] = useState({ key: 'pnl', dir: 'desc' });
+  const [events, setEvents] = useState(seedEvents);
+
+  // -------- backend bootstrap + websocket stream --------
+  useEffect(() => {
+    let cancelled = false;
+    if (!window.QuantumAPI) return;
+
+    window.QuantumAPI.snapshot()
+      .then((snapshot) => {
+        if (cancelled) return;
+        if (snapshot.inventory) setRows(snapshot.inventory.map(r => ({ ...r })));
+        if (snapshot.futures) setFuturesData(snapshot.futures.map(r => ({ ...r })));
+        if (snapshot.events) {
+          setEvents(snapshot.events.map(e => ({ ...e, uid: UID++, fresh: false })));
+        }
+      })
+      .catch(() => {});
+
+    const ws = window.QuantumAPI.connect((message) => {
+      if (cancelled || message.kind !== 'event') return;
+      setEvents(prev => {
+        const aged = prev.map(e => ({ ...e, fresh: false }));
+        const fresh = { ...message.event, uid: UID++, ago: 'now', fresh: true };
+        return [fresh, ...aged].slice(0, 11);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (ws) ws.close();
+    };
+  }, []);
+
+  // -------- live price ticks --------
+  useEffect(() => {
+    const t = setInterval(() => {
+      setRows(prev => {
+        const flashes = {};
+        const next = prev.map(r => {
+          // stablecoins barely move
+          const vol = (r.sym === 'USDC' || r.sym === 'USDT') ? 0.0004 : 0.006;
+          const drift = (Math.random() - 0.5) * 2 * vol;
+          let np = r.price * (1 + drift);
+          if (r.sym === 'USDC' || r.sym === 'USDT') np = Math.min(1.003, Math.max(0.997, np));
+          flashes[r.id] = np >= r.price ? 'up' : 'down';
+          return { ...r, price: np };
+        });
+        setFlashMap(flashes);
+        return next;
+      });
+    }, 2600);
+    return () => clearInterval(t);
+  }, []);
+
+  // clear flash classes shortly after each tick
+  useEffect(() => {
+    if (!Object.keys(flashMap).length) return;
+    const t = setTimeout(() => setFlashMap({}), 750);
+    return () => clearTimeout(t);
+  }, [flashMap]);
+
+  // -------- live event stream --------
+  useEffect(() => {
+    let i = 0;
+    const t = setInterval(() => {
+      const pick = LIVE_EVENT_POOL[i % LIVE_EVENT_POOL.length];
+      i++;
+      setEvents(prev => {
+        const aged = prev.map(e => ({ ...e, fresh: false }));
+        const fresh = { ...pick, uid: UID++, ago: 'now', fresh: true };
+        return [fresh, ...aged].slice(0, 11);
+      });
+    }, 6500);
+    return () => clearInterval(t);
+  }, []);
+
+  const ingestCSV = (name, fills) => {
+    setEvents(prev => {
+      const aged = prev.map(e => ({ ...e, fresh: false }));
+      const fresh = {
+        type: 'CSV IMPORT',
+        parts: [name + ' ingested ', { mono: `· ${fills} fills` }],
+        uid: UID++, ago: 'now', fresh: true,
+      };
+      return [fresh, ...aged].slice(0, 11);
+    });
+  };
+
+  // -------- derived totals --------
+  const totals = useMemo(() => {
+    const netUSD = rows.reduce((s, r) => s + r.qty * r.price, 0);
+    const costUSD = rows.reduce((s, r) => s + r.qty * r.avg, 0);
+    const btc = rows.find(r => r.sym === 'BTC');
+    const netBTC = btc ? netUSD / btc.price : 0;
+    const vwapPct = ((netUSD - costUSD) / costUSD) * 100;
+    return {
+      netUSD, netBTC, vwapPct,
+      deltaPct: 2.18,
+      marginUSD: 28420.00,
+      marginPct: 34.6,
+    };
+  }, [rows]);
+
+  // -------- filter + sort --------
+  const viewRows = useMemo(() => {
+    let r = rows;
+    if (filter !== 'Todos') {
+      const map = { BingX: 'BingX', Trezor: 'Trezor', Arbitrum: 'Arbitrum' };
+      r = r.filter(x => x.loc === map[filter]);
+    }
+    const dir = sort.dir === 'asc' ? 1 : -1;
+    const val = (row) => {
+      switch (sort.key) {
+        case 'sym': return row.sym;
+        case 'loc': return row.loc;
+        case 'qty': return row.qty;
+        case 'avg': return row.avg;
+        case 'price': return row.price;
+        case 'pnl': return (row.qty * row.price - row.qty * row.avg) / (row.qty * row.avg);
+        default: return 0;
+      }
+    };
+    return [...r].sort((a, b) => {
+      const va = val(a), vb = val(b);
+      if (typeof va === 'string') return va.localeCompare(vb) * dir;
+      return (va - vb) * dir;
+    });
+  }, [rows, filter, sort]);
+
+  const onSort = (key) => setSort(s => s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' });
+
+  // -------- section views --------
+  let body;
+  if (active === 'dashboard') {
+    body = h(React.Fragment, {}, [
+      h(KpiRow, { key: 'kpi', totals, sparks: rows }),
+      h('div', { className: 'center-grid', key: 'cg' }, [
+        h(InventoryTable, { key: 't', rows: viewRows, filter, onFilter: setFilter, sort, onSort, flashMap }),
+        h('div', { className: 'right-col', key: 'rc' }, [
+          h(Dropzone, { key: 'dz', onIngest: ingestCSV }),
+          h(EventLog, { key: 'log', events }),
+        ]),
+      ]),
+      h(FuturesVault, { key: 'fv', data: futuresData }),
+    ]);
+  } else if (active === 'spot') {
+    body = h('div', { className: 'section-view' }, [
+      h(InventoryTable, { key: 't', rows: viewRows, filter, onFilter: setFilter, sort, onSort, flashMap }),
+    ]);
+  } else if (active === 'hedge') {
+    body = h('div', { className: 'section-view' }, [ h(FuturesVault, { key: 'fv', data: futuresData }) ]);
+  } else if (active === 'apis') {
+    body = h('div', { className: 'center-grid', style: { gridTemplateColumns: '1fr 1fr' } }, [
+      h(Dropzone, { key: 'dz', onIngest: ingestCSV }),
+      h(EventLog, { key: 'log', events }),
+    ]);
+  } else {
+    body = h(SettingsView, { key: 'set' });
+  }
+
+  return h('div', { className: 'app' }, [
+    h(Sidebar, { key: 'sb', active, onNav: setActive }),
+    h('main', { className: 'main', key: 'main' }, [
+      h(Topbar, { key: 'tb', active }),
+      h('div', { className: 'content', key: 'c' }, body),
+    ]),
+    h(MobileDock, { key: 'dock', active, onNav: setActive }),
+  ]);
+}
+
+function SettingsView() {
+  const items = [
+    { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', on: true },
+    { l: 'Segregación de futuros', s: 'Aísla margen y PnL del inventario Spot', on: true },
+    { l: 'Auto-sync BingX API', s: 'Reconciliación cada 60s', on: true },
+    { l: 'Attestation Trezor', s: 'Verificación de vault en frío', on: true },
+    { l: 'Alertas de drift', s: 'Notificar si snapshot diverge >0.1%', on: false },
+    { l: 'Modo neón intenso', s: 'Aumenta el glow de los acentos', on: false },
+  ];
+  const [state, setState] = useState(items.map(i => i.on));
+  return h('div', { className: 'card', style: { padding: 4 } }, [
+    h('div', { className: 'card-head', key: 'h' }, [ h('h2', { key: 't' }, 'Configuración del sistema') ]),
+    h('div', { className: 'settings-grid', key: 'g' }, items.map((it, i) =>
+      h('div', { className: 'setting-row', key: i }, [
+        h('div', { key: 'l' }, [
+          h('div', { className: 'sl', key: 'a' }, it.l),
+          h('div', { className: 'ss', key: 'b' }, it.s),
+        ]),
+        h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : ''),
+          onClick: () => setState(s => s.map((v, j) => j === i ? !v : v)) }, h('i')),
+      ])
+    )),
+  ]);
+}
+
+function MobileDock({ active, onNav }) {
+  const tabs = [
+    { key: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
+    { key: 'spot',      icon: 'spot',      label: 'Spot' },
+    { key: '__add',     center: true },
+    { key: 'hedge',     icon: 'hedge',     label: 'Futuros' },
+    { key: 'settings',  icon: 'settings',  label: 'Config' },
+  ];
+  return h('nav', { className: 'mobile-dock', role: 'navigation', 'aria-label': 'Navegación principal' },
+    tabs.map(t => {
+      if (t.center) {
+        return h('button', {
+          key: 'add',
+          className: 'dock-add' + (active === 'apis' ? ' on' : ''),
+          'aria-label': 'Importar datos / CSV',
+          onClick: () => onNav('apis'),
+        }, Icons.plus({ size: 26, stroke: 2.2 }));
+      }
+      return h('button', {
+        key: t.key,
+        className: 'dock-tab' + (active === t.key ? ' on' : ''),
+        onClick: () => onNav(t.key),
+      }, [
+        Icons[t.icon]({ key: 'i', size: 21 }),
+        h('span', { className: 'dock-lbl', key: 'l' }, t.label),
+      ]);
+    })
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+
+})();
+</script>
+
+
+</body></html>
