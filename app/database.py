@@ -14,26 +14,27 @@ class Base(DeclarativeBase):
 
 
 class EventType(str, Enum):
-    TRADE_BUY = "TRADE_BUY"
-    TRADE_SELL = "TRADE_SELL"
-    TRANSFER_OUT = "TRANSFER_OUT"
+    BUY = "BUY"
+    SELL = "SELL"
     TRANSFER_IN = "TRANSFER_IN"
+    TRANSFER_OUT = "TRANSFER_OUT"
     FUTURES_PNL = "FUTURES_PNL"
-    FEE_PAYMENT = "FEE_PAYMENT"
+    FEE = "FEE"
 
 
 class LedgerEvent(Base):
     __tablename__ = "ledger_events"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    type: Mapped[str] = mapped_column(String(32), index=True)
+    event_type: Mapped[str] = mapped_column(String(32), index=True)
     asset: Mapped[str] = mapped_column(String(24), index=True)
     venue: Mapped[str] = mapped_column(String(48), index=True)
-    quantity: Mapped[float] = mapped_column(Float, default=0)
-    price: Mapped[float] = mapped_column(Float, default=0)
-    fee: Mapped[float] = mapped_column(Float, default=0)
-    tx_ref: Mapped[str] = mapped_column(String(128), default="")
-    created_at: Mapped[datetime] = mapped_column(
+    destination: Mapped[str] = mapped_column(String(48), default="")
+    quantity: Mapped[float] = mapped_column(Float, default=0.0)
+    price: Mapped[float] = mapped_column(Float, default=0.0)
+    fee: Mapped[float] = mapped_column(Float, default=0.0)
+    transaction_hash: Mapped[str] = mapped_column(String(128), default="")
+    timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         index=True,
