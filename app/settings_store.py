@@ -12,6 +12,46 @@ from .config import (
 
 SETTINGS_FILE = DATA_DIR / "settings.json"
 
+VALID_CATEGORIES = {"spot", "bot"}
+VALID_BOT_TYPES = {"Hedge", "Linear", "Grid", "Trading"}
+
+
+def _infer_bot_type(name: str) -> str:
+    """Infiere la familia de un bot a partir de su nombre (ej: "Grid Ping Pong" → "Grid").
+
+    Si el nombre no menciona ninguna familia conocida, cae en "Hedge" por defecto.
+    """
+    lname = name.lower()
+    for bot_type in ("Grid", "Linear", "Trading"):
+        if bot_type.lower() in lname:
+            return bot_type
+    return "Hedge"
+
+
+def _normalize_wallets(wallets: dict) -> dict[str, dict]:
+    """Normaliza wallets a {"Nombre": {"address": "0x...", "category": "spot"|"bot", "bot_type": "Hedge"|...}}.
+
+    Soporta el formato legado {"Nombre": "0x..."} (categoría por defecto: bot).
+    Si no hay bot_type explícito (o es inválido), se infiere a partir del nombre.
+    """
+    normalized: dict[str, dict] = {}
+    for name, value in wallets.items():
+        if isinstance(value, str):
+            normalized[name] = {"address": value, "category": "bot", "bot_type": _infer_bot_type(name)}
+        elif isinstance(value, dict):
+            category = value.get("category", "bot")
+            if category not in VALID_CATEGORIES:
+                category = "bot"
+            bot_type = value.get("bot_type")
+            if bot_type not in VALID_BOT_TYPES:
+                bot_type = _infer_bot_type(name)
+            normalized[name] = {
+                "address": value.get("address", ""),
+                "category": category,
+                "bot_type": bot_type,
+            }
+    return normalized
+
 
 def _read_overrides() -> dict:
     if not SETTINGS_FILE.exists():
@@ -29,7 +69,7 @@ def get_config() -> dict:
         "bingx_api_key": overrides.get("bingx_api_key") or BINGX_API_KEY,
         "bingx_api_secret": overrides.get("bingx_api_secret") or BINGX_API_SECRET,
         "arbitrum_rpc_url": overrides.get("arbitrum_rpc_url") or ARBITRUM_RPC_URL,
-        "arbitrum_wallets": overrides.get("arbitrum_wallets") or ARBITRUM_WALLETS,
+        "arbitrum_wallets": _normalize_wallets(overrides.get("arbitrum_wallets") or ARBITRUM_WALLETS),
     }
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
+from typing import Literal
 
 from fastapi import Depends, FastAPI, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
@@ -14,6 +15,7 @@ from . import settings_store
 from .config import STATIC_DIR, SYNC_INTERVAL_MINUTES
 from .connectors.arbitrum import ArbitrumConnector
 from .connectors.bingx import BingXConnector
+from .connectors.hyperliquid import HyperliquidConnector
 from .database import LedgerEvent, SessionLocal, init_db
 from .futures_isolation import FuturesLedger
 from .parsers import parse_csv
@@ -33,11 +35,17 @@ EVENT_LABELS = {
 }
 
 
+class ArbitrumWalletConfig(BaseModel):
+    address: str
+    category: Literal["spot", "bot"] = "bot"
+    bot_type: Literal["Hedge", "Linear", "Grid", "Trading"] = "Hedge"
+
+
 class SettingsUpdate(BaseModel):
     bingx_api_key: str | None = None
     bingx_api_secret: str | None = None
     arbitrum_rpc_url: str | None = None
-    arbitrum_wallets: dict[str, str] | None = None
+    arbitrum_wallets: dict[str, ArbitrumWalletConfig] | None = None
 
 
 app = FastAPI(title="Quantum PMS", version="0.2.0")
@@ -103,16 +111,27 @@ def snapshot(db: Session = Depends(get_db)) -> dict:
     futures = FuturesLedger().process(events)
     prices = fetch_prices(list(FALLBACK_PRICES.keys()))
 
+    cfg = settings_store.get_config()
     arbitrum_rows = _arbitrum_rows(prices)
+    spot_arbitrum_rows = _clean_wallet_rows([r for r in arbitrum_rows if r["category"] == "spot"])
+    bot_arbitrum_rows = [r for r in arbitrum_rows if r["category"] == "bot"]
+
+    bot_wallets = {
+        name: w for name, w in cfg["arbitrum_wallets"].items() if w.get("category") == "bot"
+    }
+    hl_values = _hyperliquid_values(bot_wallets)
+    bot_liquidity = _bot_liquidity_rows(bot_arbitrum_rows, hl_values)
+
     inventory = spot.inventory_rows(prices)
-    inventory += arbitrum_rows
+    inventory += spot_arbitrum_rows
 
     return {
-        "inventory": inventory,
+        "inventory": inventory,  # Inventario de Ahorros: Trezor, BingX Spot, Arbitrum (categoría spot)
+        "bot_liquidity": bot_liquidity,  # Liquidez de Bots: equity unificado (USDC/USDT en Arbitrum + Hyperliquid)
         "events": _event_feed(events),
         "futures_cash": futures.cash_flow_rows(),  # saldos reales de caja
         "futures_pnl_total": futures.total_realized_pnl(),
-        "futures_stable_equity": _stable_equity(arbitrum_rows),  # USDT/USDC reales en wallets Arbitrum
+        "futures_stable_equity": _stable_equity(bot_liquidity),  # equity aislado total de los bots
     }
 
 
@@ -249,16 +268,11 @@ def sync_bingx(db: Session = Depends(get_db)) -> dict:
 @app.websocket("/ws/live")
 async def live_feed(websocket: WebSocket) -> None:
     await websocket.accept()
-    pool = [
-        {"type": "SYNC", "parts": ["BingX API heartbeat ", {"mono": "solo lectura"}]},
-        {"type": "TRANSFER", "parts": ["Snapshot de pool Arbitrum reconciliado ", {"mono": "VWAP preservado"}]},
-        {"type": "FUTURES PNL", "parts": [{"mono": "+$210.00 USDT"}, " realizado ", {"mono": "aislado"}]},
-        {"type": "COMPRA", "parts": ["0.08 ETH comprado @ BingX ", {"mono": "VWAP actualizado"}]},
-    ]
+    # PENDING EPIC 3: Real websocket integration
     try:
         while True:
-            await asyncio.sleep(5)
-            await websocket.send_json({"kind": "event", "event": random.choice(pool)})
+            await asyncio.sleep(60)
+            await websocket.send_json({"kind": "ping"})
     except WebSocketDisconnect:
         return
 
@@ -272,7 +286,7 @@ def _event_feed(events: list[LedgerEvent]) -> list[dict]:
                 f"{event.quantity:g} {event.asset} @ {event.venue} ",
                 {"mono": event.transaction_hash},
             ],
-            "ago": "seed",
+            "timestamp": event.timestamp.isoformat(),
         })
     return feed
 
@@ -322,9 +336,89 @@ def _arbitrum_rows(prices: dict[str, float]) -> list[dict]:
         return []
 
 
-def _stable_equity(arbitrum_rows: list[dict]) -> float:
-    """Suma real de USDT/USDC encontrados en las wallets Arbitrum del usuario."""
-    return round(
-        sum(row["market_value"] for row in arbitrum_rows if row["sym"] in ("USDT", "USDC")),
-        2,
-    )
+def _stable_equity(bot_liquidity_rows: list[dict]) -> float:
+    """Equity total aislado de los bots (Arbitrum cash + Hyperliquid)."""
+    return round(sum(row["market_value"] for row in bot_liquidity_rows), 2)
+
+
+def _hyperliquid_values(bot_wallets: dict[str, dict]) -> dict[str, float]:
+    """Valor de cuenta en Hyperliquid (margen + PnL) por wallet bot. {} si falla o no hay wallets."""
+    if not bot_wallets:
+        return {}
+    try:
+        return HyperliquidConnector(bot_wallets).fetch_account_values()
+    except Exception as exc:
+        log.warning("Hyperliquid snapshot error: %s", exc)
+        return {}
+
+
+def _clean_wallet_rows(rows: list[dict]) -> list[dict]:
+    """
+    Reduce el ruido visual: si una wallet tiene algún saldo real, oculta sus
+    tokens en cero. Si la wallet está completamente vacía, muestra todas sus
+    filas en 0.00 (filas reales, sin placeholders) para que la wallet siga
+    siendo visible en la tabla.
+    """
+    by_wallet: dict[str, list[dict]] = {}
+    order: list[str] = []
+    for row in rows:
+        loc = row["loc"]
+        if loc not in by_wallet:
+            by_wallet[loc] = []
+            order.append(loc)
+        by_wallet[loc].append(row)
+
+    cleaned: list[dict] = []
+    for loc in order:
+        wallet_rows = by_wallet[loc]
+        non_zero = [r for r in wallet_rows if r["qty"] > 1e-9]
+        cleaned.extend(non_zero if non_zero else wallet_rows)
+    return cleaned
+
+
+def _bot_liquidity_rows(bot_arbitrum_rows: list[dict], hl_values: dict[str, float]) -> list[dict]:
+    """
+    Liquidez de Bots: una sola fila de equity por wallet bot, unificando
+    el efectivo (USDC/USDT) en Arbitrum con el valor de cuenta en Hyperliquid
+    (Perpetuos + Spot). Sin "polvo" de Arbitrum (WBTC/WETH/ARB no entran aquí).
+    Wallets sin fondos muestran una fila normal con cantidad 0.00.
+    """
+    by_wallet: dict[str, list[dict]] = {}
+    order: list[str] = []
+    for row in bot_arbitrum_rows:
+        loc = row["loc"]
+        if loc not in by_wallet:
+            by_wallet[loc] = []
+            order.append(loc)
+        by_wallet[loc].append(row)
+
+    rows: list[dict] = []
+    row_id = 5000
+    for loc in order:
+        wallet_rows = by_wallet[loc]
+        name = loc.split(": ", 1)[-1] if ": " in loc else loc
+        cash = round(sum(r["market_value"] for r in wallet_rows if r["sym"] in ("USDT", "USDC")), 2)
+        hl_value = round(hl_values.get(name, 0.0), 2)
+        total = round(cash + hl_value, 2)
+        bot_type = wallet_rows[0].get("bot_type", "Hedge")
+
+        rows.append({
+            "id": row_id,
+            "sym": "USD",
+            "name": "USD",
+            "loc": loc,
+            "qty": total,
+            "avg": 1.0,
+            "price": 1.0,
+            "cost_total": total,
+            "market_value": total,
+            "pnl_usd": 0.0,
+            "pnl_pct": 0.0,
+            "realized_pnl": 0.0,
+            "category": "bot",
+            "bot_type": bot_type,
+            "arb_value": cash,    # desglose: solo USDC/USDT en la wallet Arbitrum
+            "hl_value": hl_value, # desglose: solo el valor de cuenta en Hyperliquid
+        })
+        row_id += 1
+    return rows

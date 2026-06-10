@@ -45,26 +45,30 @@ class ArbitrumConnector:
     para respetar los límites de Alchemy.
     """
 
-    def __init__(self, rpc_url: str, wallets: dict[str, str]) -> None:
-        # wallets: {"Hedge": "0xA13C...", "Trading": "0xD49B...", ...}
+    def __init__(self, rpc_url: str, wallets: dict[str, dict]) -> None:
+        # wallets: {"Hedge": {"address": "0xA13C...", "category": "bot"}, ...}
         self._rpc = rpc_url
         self._wallets = wallets
 
     def fetch_balances(self) -> list[dict]:
         """
         Retorna filas de inventario con el formato de VWAPEngine.inventory_rows():
-        {id, sym, name, loc, qty, avg, price}
+        {id, sym, name, loc, qty, avg, price, category}
         avg=0 porque no hay datos de costo base desde la wallet.
         loc = "Arb: {nombre_wallet}"
-        Solo incluye filas con qty > 0.
+        category = "spot" | "bot", según la configuración de la wallet.
+        Incluye todos los tokens configurados, incluso con qty = 0
+        (para que la wallet siempre aparezca en su tabla).
         """
         rows: list[dict] = []
         row_id = 1000  # IDs altos para no colisionar con los del VWAPEngine
 
-        for wallet_name, wallet_addr in self._wallets.items():
-            wallet_rows = self._fetch_wallet(wallet_name, wallet_addr)
+        for wallet_name, wallet in self._wallets.items():
+            wallet_rows = self._fetch_wallet(wallet_name, wallet["address"])
             for row in wallet_rows:
                 row["id"] = row_id
+                row["category"] = wallet.get("category", "bot")
+                row["bot_type"] = wallet.get("bot_type", "Hedge")
                 rows.append(row)
                 row_id += 1
             time.sleep(_WALLET_DELAY_S)
@@ -112,9 +116,6 @@ class ArbitrumConnector:
             _, decimals = TOKENS[symbol]
             raw = _decode_uint256(item.get("result", "0x0"))
             qty = raw / (10 ** decimals)
-
-            if qty < 1e-12:
-                continue  # omitir balances cero
 
             rows.append({
                 "sym":   symbol,
