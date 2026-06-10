@@ -103,15 +103,16 @@ def snapshot(db: Session = Depends(get_db)) -> dict:
     futures = FuturesLedger().process(events)
     prices = fetch_prices(list(FALLBACK_PRICES.keys()))
 
+    arbitrum_rows = _arbitrum_rows(prices)
     inventory = spot.inventory_rows(prices)
-    inventory += _arbitrum_rows(prices)
+    inventory += arbitrum_rows
 
     return {
         "inventory": inventory,
         "events": _event_feed(events),
-        "futures": _futures_chart_rows(),          # formato {d, flow, equity} para el gráfico
         "futures_cash": futures.cash_flow_rows(),  # saldos reales de caja
-        "futures_pnl_total": futures.total_realized_pnl("USDT"),
+        "futures_pnl_total": futures.total_realized_pnl(),
+        "futures_stable_equity": _stable_equity(arbitrum_rows),  # USDT/USDC reales en wallets Arbitrum
     }
 
 
@@ -321,12 +322,9 @@ def _arbitrum_rows(prices: dict[str, float]) -> list[dict]:
         return []
 
 
-def _futures_chart_rows() -> list[dict]:
-    """Datos simulados para el gráfico (formato {d, flow, equity}). Se reemplazará con histórico real en Epic 3."""
-    flows = [320, -180, 450, 210, -120, 680, 140, -260, 520, 390, -90, 610, 240, 450]
-    base = 24500
-    rows = []
-    for idx, flow in enumerate(flows, start=1):
-        base += flow
-        rows.append({"d": f"D-{15 - idx:02d}", "flow": flow, "equity": base})
-    return rows
+def _stable_equity(arbitrum_rows: list[dict]) -> float:
+    """Suma real de USDT/USDC encontrados en las wallets Arbitrum del usuario."""
+    return round(
+        sum(row["market_value"] for row in arbitrum_rows if row["sym"] in ("USDT", "USDC")),
+        2,
+    )

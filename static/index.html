@@ -1192,23 +1192,20 @@ body {
 .fut-stat .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
 .fut-stat .v { font-family: var(--mono); font-size: 21px; font-weight: 600; margin-top: 6px; }
 
-.chart-wrap { position: relative; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-inset); padding: 16px 8px 8px; }
-.chart-legend { display: flex; gap: 18px; padding: 0 14px 10px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); }
-.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
-.chart-legend .sw { width: 14px; height: 3px; border-radius: 2px; }
-.chart-legend .sw.bar { height: 11px; width: 7px; border-radius: 2px; }
-
-.chart-tip {
-  position: absolute; pointer-events: none; opacity: 0;
-  transform: translate(-50%, -120%);
-  background: #0a0d13; border: 1px solid var(--border-strong);
-  border-radius: 8px; padding: 8px 11px;
-  font-family: var(--mono); font-size: 11px; white-space: nowrap;
-  box-shadow: 0 10px 30px rgba(0,0,0,.6); z-index: 5;
-  transition: opacity .12s;
+.fut-cash-list {
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-inset); padding: 8px;
+  display: flex; flex-direction: column; gap: 6px;
+  font-family: var(--mono); font-size: 12px;
 }
-.chart-tip .t-date { color: var(--ink-3); font-size: 10px; }
-.chart-tip .t-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.fut-cash-row {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 14px;
+  align-items: center; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg-panel);
+}
+.fut-cash-row .fcr-loc { color: var(--ink-2); }
+.fut-cash-row .fcr-bal { color: #00F0FF; }
 
 /* ============================================================
    Tooltip (generic hover on KPIs)
@@ -1636,30 +1633,6 @@ const LIVE_EVENT_POOL = [
   { type: 'COMPRA',        parts: ['540 ARB @ BingX ', { mono: '(VWAP 0.918)' }] },
 ];
 
-// ---- Futures isolated cash-flow series (last 14 sessions) ----
-// flow = realized PnL that session (bars); equity = cumulative isolated balance (line)
-const FUTURES_FLOW = [
-  { d: 'May 24', flow:  320 },
-  { d: 'May 25', flow: -180 },
-  { d: 'May 26', flow:  450 },
-  { d: 'May 27', flow:  210 },
-  { d: 'May 28', flow: -120 },
-  { d: 'May 29', flow:  680 },
-  { d: 'May 30', flow:  140 },
-  { d: 'May 31', flow: -260 },
-  { d: 'Jun 01', flow:  520 },
-  { d: 'Jun 02', flow:  390 },
-  { d: 'Jun 03', flow: -90  },
-  { d: 'Jun 04', flow:  610 },
-  { d: 'Jun 05', flow:  240 },
-  { d: 'Jun 06', flow:  450 },
-];
-// build cumulative equity starting from a base margin float
-(function () {
-  let base = 24500;
-  FUTURES_FLOW.forEach(p => { base += p.flow; p.equity = base; });
-})();
-
 const fmtUSD = (n, dp = 2) =>
   '$' + n.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
 const fmtNum = (n, dp = 2) =>
@@ -1677,7 +1650,7 @@ const fmtDate = (iso) => {
 
 Object.assign(window, {
   ASSET_COLORS, LOCATIONS, INVENTORY, SOURCES,
-  EVENT_TYPES, EVENT_ICONS, SEED_EVENTS, LIVE_EVENT_POOL, FUTURES_FLOW,
+  EVENT_TYPES, EVENT_ICONS, SEED_EVENTS, LIVE_EVENT_POOL,
   fmtUSD, fmtNum, fmtQty, fmtDate,
 });
 
@@ -1996,7 +1969,7 @@ const COLS = [
 ];
 
 function LocTag({ loc }) {
-  const L = LOCATIONS[loc];
+  const L = LOCATIONS[loc] || { color: '#9AA4B6', label: loc };
   return h('span', { className: 'loc-tag', style: { color: L.color } }, [
     h('span', { className: 'ld', key: 'd', style: { background: L.color, boxShadow: `0 0 6px ${L.color}` } }),
     h('span', { key: 'l', style: { color: 'var(--ink-2)' } }, L.label),
@@ -2364,112 +2337,9 @@ function HistoryView() {
   ]);
 }
 
-/* ----------------------------- Futures Chart ----------------------------- */
-function FuturesChart({ data }) {
-  const ref = useRef(null);
-  const [tip, setTip] = useState(null);
-  const W = 760, H = 240, padL = 8, padR = 8, padT = 14, padB = 26;
-  const iw = W - padL - padR, ih = H - padT - padB;
-
-  const flows = data.map(d => d.flow);
-  const eqs = data.map(d => d.equity);
-  const maxFlow = Math.max(...flows.map(Math.abs)) || 1;
-  const minEq = Math.min(...eqs), maxEq = Math.max(...eqs);
-  const eqRng = (maxEq - minEq) || 1;
-
-  const n = data.length;
-  const slot = iw / n;
-  const barW = slot * 0.42;
-  const zeroY = padT + ih * 0.62; // baseline for bars (PnL +/-)
-
-  const x = (i) => padL + slot * i + slot / 2;
-  const eqY = (v) => padT + ih - ((v - minEq) / eqRng) * (ih * 0.86) - 6;
-
-  const linePts = data.map((d, i) => [x(i), eqY(d.equity)]);
-  const lineD = linePts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
-  const areaD = lineD + ` L${x(n - 1).toFixed(1)} ${padT + ih} L${x(0).toFixed(1)} ${padT + ih} Z`;
-
-  const handleMove = (e) => {
-    const rect = ref.current.getBoundingClientRect();
-    const px = (e.clientX - rect.left) * (W / rect.width);
-    let idx = Math.round((px - padL - slot / 2) / slot);
-    idx = Math.max(0, Math.min(n - 1, idx));
-    setTip({ idx, left: (x(idx) / W) * rect.width, top: (eqY(data[idx].equity) / H) * rect.height });
-  };
-
-  return h('div', { className: 'chart-wrap', key: 'cw' }, [
-    h('div', { className: 'chart-legend', key: 'lg' }, [
-      h('span', { key: 'e' }, [h('span', { className: 'sw', key: 's', style: { background: '#00F0FF', boxShadow: '0 0 8px #00F0FF' } }), 'Equity aislado (acum.)']),
-      h('span', { key: 'p' }, [h('span', { className: 'sw bar', key: 's', style: { background: '#39FF14' } }), 'PnL sesión +']),
-      h('span', { key: 'n' }, [h('span', { className: 'sw bar', key: 's', style: { background: '#FF3B5C' } }), 'PnL sesión −']),
-    ]),
-    h('svg', {
-      key: 'svg', ref, viewBox: `0 0 ${W} ${H}`, width: '100%',
-      style: { display: 'block', overflow: 'visible' },
-      onMouseMove: handleMove, onMouseLeave: () => setTip(null),
-    }, [
-      h('defs', { key: 'defs' }, [
-        h('linearGradient', { key: 'eq', id: 'eqGrad', x1: 0, y1: 0, x2: 0, y2: 1 }, [
-          h('stop', { key: 1, offset: 0, stopColor: '#00F0FF', stopOpacity: .28 }),
-          h('stop', { key: 2, offset: 1, stopColor: '#00F0FF', stopOpacity: 0 }),
-        ]),
-      ]),
-      // gridlines
-      ...[0.25, 0.5, 0.75].map((g, i) =>
-        h('line', { key: 'g' + i, x1: padL, x2: W - padR, y1: padT + ih * g, y2: padT + ih * g, stroke: '#161B25', strokeWidth: 1 })),
-      // zero baseline
-      h('line', { key: 'z', x1: padL, x2: W - padR, y1: zeroY, y2: zeroY, stroke: '#2A3242', strokeWidth: 1, strokeDasharray: '3 3' }),
-      // bars
-      ...data.map((d, i) => {
-        const hgt = (Math.abs(d.flow) / maxFlow) * (ih * 0.32);
-        const pos = d.flow >= 0;
-        const by = pos ? zeroY - hgt : zeroY;
-        const col = pos ? '#39FF14' : '#FF3B5C';
-        const hot = tip && tip.idx === i;
-        return h('rect', {
-          key: 'b' + i, x: x(i) - barW / 2, y: by, width: barW, height: Math.max(2, hgt),
-          rx: 2, fill: col, opacity: hot ? 1 : .62,
-          style: hot ? { filter: `drop-shadow(0 0 6px ${col})` } : null,
-        });
-      }),
-      // equity area + line
-      h('path', { key: 'area', d: areaD, fill: 'url(#eqGrad)' }),
-      h('path', { key: 'line', d: lineD, fill: 'none', stroke: '#00F0FF', strokeWidth: 2, style: { filter: 'drop-shadow(0 0 6px rgba(0,240,255,.5))' } }),
-      // points
-      ...linePts.map((p, i) => h('circle', {
-        key: 'pt' + i, cx: p[0], cy: p[1], r: tip && tip.idx === i ? 4.5 : 2.5,
-        fill: '#0B0E14', stroke: '#00F0FF', strokeWidth: 1.6,
-      })),
-      // x labels (every other)
-      ...data.map((d, i) => i % 2 === 1 ? h('text', {
-        key: 'x' + i, x: x(i), y: H - 8, fill: '#5E6877', fontSize: 9,
-        textAnchor: 'middle', fontFamily: 'IBM Plex Mono',
-      }, d.d) : null),
-      tip ? h('line', { key: 'cur', x1: x(tip.idx), x2: x(tip.idx), y1: padT, y2: padT + ih, stroke: '#00F0FF', strokeWidth: 1, strokeOpacity: .3 }) : null,
-    ]),
-    tip ? h('div', {
-      key: 'tip', className: 'chart-tip', style: { left: tip.left, top: tip.top, opacity: 1 },
-    }, [
-      h('div', { className: 't-date', key: 'd' }, data[tip.idx].d),
-      h('div', { className: 't-row', key: 'e' }, [
-        h('span', { key: 's', style: { width: 8, height: 2, background: '#00F0FF', display: 'inline-block' } }),
-        h('span', { key: 'l', style: { color: 'var(--ink-3)' } }, 'Equity '),
-        h('span', { key: 'v', style: { color: '#00F0FF' } }, fmtUSD(data[tip.idx].equity)),
-      ]),
-      h('div', { className: 't-row', key: 'p' }, [
-        h('span', { key: 'l', style: { color: 'var(--ink-3)' } }, 'PnL sesión '),
-        h('span', { key: 'v', style: { color: data[tip.idx].flow >= 0 ? '#39FF14' : '#FF3B5C' } },
-          (data[tip.idx].flow >= 0 ? '+' : '−') + fmtUSD(Math.abs(data[tip.idx].flow))),
-      ]),
-    ]) : null,
-  ]);
-}
-
-function FuturesVault({ data }) {
-  const realizedTotal = data.reduce((s, d) => s + d.flow, 0);
-  const wins = data.filter(d => d.flow > 0).length;
-  const winRate = (wins / data.length) * 100;
-  const equity = data[data.length - 1].equity;
+/* ----------------------------- Futures Vault ----------------------------- */
+function FuturesVault({ stableEquity, realizedPnl, cashRows }) {
+  const totalEvents = cashRows.reduce((s, r) => s + r.event_count, 0);
 
   return h('div', { className: 'section-block', key: 'fv' }, [
     h('div', { className: 'seg-divider', key: 'div' }, [
@@ -2492,17 +2362,17 @@ function FuturesVault({ data }) {
         h('div', { className: 'futures-body', key: 'body' }, [
           h('div', { className: 'fut-stats', key: 'stats' }, [
             h('div', { className: 'fut-stat', key: 's1' }, [
-              h('div', { className: 'l', key: 'l' }, 'Equity aislado'),
-              h('div', { className: 'v', key: 'v', style: { color: '#00F0FF' } }, fmtUSD(equity)),
+              h('div', { className: 'l', key: 'l' }, 'Equity aislado · USDT/USDC en Arbitrum'),
+              h('div', { className: 'v', key: 'v', style: { color: '#00F0FF' } }, fmtUSD(stableEquity)),
             ]),
             h('div', { className: 'fut-stat', key: 's2' }, [
-              h('div', { className: 'l', key: 'l' }, 'PnL realizado · 14d'),
-              h('div', { className: 'v', key: 'v', style: { color: realizedTotal >= 0 ? '#39FF14' : '#FF3B5C' } },
-                (realizedTotal >= 0 ? '+' : '−') + fmtUSD(Math.abs(realizedTotal))),
+              h('div', { className: 'l', key: 'l' }, 'PnL realizado · futuros'),
+              h('div', { className: 'v', key: 'v', style: { color: realizedPnl >= 0 ? '#39FF14' : '#FF3B5C' } },
+                (realizedPnl >= 0 ? '+' : '−') + fmtUSD(Math.abs(realizedPnl))),
             ]),
             h('div', { className: 'fut-stat', key: 's3' }, [
-              h('div', { className: 'l', key: 'l' }, 'Win rate · sesiones'),
-              h('div', { className: 'v', key: 'v', style: { color: '#E7ECF5' } }, winRate.toFixed(0) + '%'),
+              h('div', { className: 'l', key: 'l' }, 'Liquidaciones registradas'),
+              h('div', { className: 'v', key: 'v', style: { color: '#E7ECF5' } }, String(totalEvents)),
             ]),
             h('div', { className: 'fut-stat', key: 's4', style: { borderColor: 'rgba(157,0,255,.3)', background: 'rgba(157,0,255,.05)' } }, [
               h('div', { className: 'l', key: 'l', style: { color: 'var(--purple-2)' } }, 'Transferido a Spot'),
@@ -2510,14 +2380,23 @@ function FuturesVault({ data }) {
               h('div', { key: 'n', style: { fontFamily: 'var(--mono)', fontSize: 9.5, color: 'var(--ink-3)', marginTop: 4 } }, 'cero contaminación de coste'),
             ]),
           ]),
-          h(FuturesChart, { key: 'chart', data }),
+          cashRows.length
+            ? h('div', { className: 'fut-cash-list', key: 'cash' }, cashRows.map(r =>
+                h('div', { className: 'fut-cash-row', key: r.asset + '-' + r.venue }, [
+                  h('span', { className: 'fcr-loc', key: 'a' }, `${r.asset} · ${r.venue}`),
+                  h('span', { className: 'fcr-bal', key: 'b' }, fmtUSD(r.balance)),
+                  h('span', { className: 'fcr-pnl', key: 'p', style: { color: r.realized_pnl >= 0 ? '#39FF14' : '#FF3B5C' } },
+                    (r.realized_pnl >= 0 ? '+' : '−') + fmtUSD(Math.abs(r.realized_pnl))),
+                ])
+              ))
+            : h('div', { className: 'isolation-note', key: 'empty' }, 'Sin liquidaciones de futuros registradas todavía.'),
         ]),
       ]),
     ]),
   ]);
 }
 
-Object.assign(window, { Dropzone, EventLog, HistoryView, FuturesChart, FuturesVault });
+Object.assign(window, { Dropzone, EventLog, HistoryView, FuturesVault });
 
 })();
 </script>
@@ -2537,7 +2416,9 @@ function seedEvents() {
 function App() {
   const [active, setActive] = useState('dashboard');
   const [rows, setRows] = useState(() => INVENTORY.map(r => ({ ...r })));
-  const [futuresData, setFuturesData] = useState(() => FUTURES_FLOW.map(r => ({ ...r })));
+  const [stableEquity, setStableEquity] = useState(0);
+  const [realizedPnl, setRealizedPnl] = useState(0);
+  const [cashRows, setCashRows] = useState([]);
   const [flashMap, setFlashMap] = useState({});
   const [filter, setFilter] = useState('Todos');
   const [sort, setSort] = useState({ key: 'pnl', dir: 'desc' });
@@ -2553,7 +2434,9 @@ function App() {
       .then((snapshot) => {
         if (cancelled) return;
         if (snapshot.inventory) setRows(snapshot.inventory.map(r => ({ ...r })));
-        if (snapshot.futures) setFuturesData(snapshot.futures.map(r => ({ ...r })));
+        if (typeof snapshot.futures_stable_equity === 'number') setStableEquity(snapshot.futures_stable_equity);
+        if (typeof snapshot.futures_pnl_total === 'number') setRealizedPnl(snapshot.futures_pnl_total);
+        if (snapshot.futures_cash) setCashRows(snapshot.futures_cash.map(r => ({ ...r })));
         if (snapshot.events) {
           setEvents(snapshot.events.map(e => ({ ...e, uid: UID++, fresh: false })));
         }
@@ -2653,8 +2536,12 @@ function App() {
   const viewRows = useMemo(() => {
     let r = rows;
     if (filter !== 'Todos') {
-      const map = { BingX: 'BingX', Trezor: 'Trezor', Arbitrum: 'Arbitrum' };
-      r = r.filter(x => x.loc === map[filter]);
+      if (filter === 'Arbitrum') {
+        r = r.filter(x => x.loc.startsWith('Arb'));
+      } else {
+        const map = { BingX: 'BingX', Trezor: 'Trezor' };
+        r = r.filter(x => x.loc === map[filter]);
+      }
     }
     const dir = sort.dir === 'asc' ? 1 : -1;
     const val = (row) => {
@@ -2690,7 +2577,7 @@ function App() {
         ]),
       ]),
       h(PerformanceSection, { key: 'perf', pnlData }),
-      h(FuturesVault, { key: 'fv', data: futuresData }),
+      h(FuturesVault, { key: 'fv', stableEquity, realizedPnl, cashRows }),
     ]);
   } else if (active === 'spot') {
     body = h('div', { className: 'section-view' }, [
@@ -2698,7 +2585,7 @@ function App() {
       h(PerformanceSection, { key: 'perf', pnlData }),
     ]);
   } else if (active === 'hedge') {
-    body = h('div', { className: 'section-view' }, [ h(FuturesVault, { key: 'fv', data: futuresData }) ]);
+    body = h('div', { className: 'section-view' }, [ h(FuturesVault, { key: 'fv', stableEquity, realizedPnl, cashRows }) ]);
   } else if (active === 'apis') {
     body = h('div', { className: 'center-grid', style: { gridTemplateColumns: '1fr 1fr' } }, [
       h(Dropzone, { key: 'dz', onIngest: ingestCSV }),
