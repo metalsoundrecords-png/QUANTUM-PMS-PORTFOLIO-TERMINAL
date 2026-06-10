@@ -1,0 +1,27 @@
+{
+  "name": "quantum-pms-portfolio-terminal",
+  "version": "1.0.0",
+  "description": "Terminal financiero y sistema de gestión de portafolio cripto con backend FastAPI, ledger SQLite por eventos y frontend web basado en el diseño original de Claude Designs.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metalsoundrecords-png/QUANTUM-PMS-PORTFOLIO-TERMINAL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/metalsoundrecords-png/QUANTUM-PMS-PORTFOLIO-TERMINAL/issues"
+  },
+  "homepage": "https://github.com/metalsoundrecords-png/QUANTUM-PMS-PORTFOLIO-TERMINAL#readme",
+  "dependencies": {
+    "convex": "^1.40.0"
+  }
+}
