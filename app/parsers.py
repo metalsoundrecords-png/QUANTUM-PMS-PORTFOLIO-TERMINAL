@@ -95,7 +95,7 @@ def _parse_bingx_spot(rows: list[dict]) -> list[LedgerEvent]:
         fee_raw = r.get("fee", "0")
         fee = _safe_float(fee_raw)
         ts = _parse_ts(r.get("time", ""))
-        tx_hash = f"bingx-{side.lower()}-{asset}-{i}-{int(ts.timestamp())}"
+        tx_hash = f"bingx-{side.lower()}-{asset}-{qty:.8g}-{price:.8g}-{int(ts.timestamp())}"
         events.append(LedgerEvent(
             event_type=EventType.BUY.value if side == "BUY" else EventType.SELL.value,
             asset=asset,
@@ -121,7 +121,7 @@ def _parse_bingx_tx(rows: list[dict]) -> list[LedgerEvent]:
         qty = _safe_float(r.get("amount", "0"))
         ts = _parse_ts(r.get("date", ""))
         side = "BUY" if "BUY" in tx_type else "SELL"
-        tx_hash = f"bingx-tx-{side.lower()}-{asset}-{i}-{int(ts.timestamp())}"
+        tx_hash = f"bingx-{side.lower()}-{asset}-{qty:.8g}-{price:.8g}-{int(ts.timestamp())}"
         events.append(LedgerEvent(
             event_type=EventType.BUY.value if side == "BUY" else EventType.SELL.value,
             asset=asset,

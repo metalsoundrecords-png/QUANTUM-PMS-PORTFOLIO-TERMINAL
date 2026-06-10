@@ -991,6 +991,27 @@ body {
 .pnl-cell { display: inline-flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
 .pnl-pct { font-size: 11px; opacity: .9; }
 
+/* ---------- Performance section (MAR-21) ---------- */
+.perf-highlight-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  padding: 16px 18px; border-bottom: 1px solid var(--border);
+}
+.perf-highlight {
+  border: 1px solid var(--accent, var(--border));
+  background: color-mix(in srgb, var(--accent, var(--border)) 8%, transparent);
+  border-radius: 12px; padding: 12px 14px;
+}
+.perf-label {
+  font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 6px;
+}
+.perf-asset { font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.perf-pct { font-size: 22px; font-weight: 700; font-family: var(--mono); }
+.perf-usd { font-size: 12.5px; font-family: var(--mono); opacity: .85; }
+@media (max-width: 640px) {
+  .perf-highlight-row { grid-template-columns: 1fr; }
+}
+
 .num-flash-up { animation: flashUp .7s ease; }
 .num-flash-down { animation: flashDown .7s ease; }
 @keyframes flashUp { 0% { color: var(--green); text-shadow: 0 0 12px rgba(57,255,20,.6);} 100%{} }
@@ -1004,6 +1025,31 @@ body {
 }
 .table-foot .spacer { flex: 1; }
 .table-foot b { color: var(--ink); }
+
+/* ---------- History view (MAR-20) ---------- */
+.hist-search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-inset); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px;
+  color: var(--ink-3);
+}
+.hist-search input {
+  background: transparent; border: 0; outline: 0;
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink);
+  width: 200px;
+}
+.hist-search input::placeholder { color: var(--ink-3); }
+.hist-type {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+  padding: 4px 9px; border-radius: 6px;
+  border: 1px solid transparent; letter-spacing: .04em;
+  white-space: nowrap;
+}
+.hist-empty {
+  padding: 36px 18px; text-align: center;
+  color: var(--ink-3); font-family: var(--mono); font-size: 12.5px;
+}
 
 /* ---------- Right column: ingestion + logs ---------- */
 .right-col { display: flex; flex-direction: column; gap: 18px; }
@@ -1192,6 +1238,75 @@ body {
   font-family: var(--mono); font-size: 12px; color: var(--ink-3);
   padding: 40px; text-align: center;
 }
+/* ---------- Credentials / Settings panel (MAR-22) ---------- */
+.cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; }
+.cred-card {
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-inset); padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.cred-card-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--ink); font-weight: 600;
+}
+.cred-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cred-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.cred-value {
+  font-size: 12px; color: var(--ink-2);
+  background: var(--bg-panel-2); border: 1px solid var(--border-soft);
+  border-radius: 6px; padding: 4px 9px;
+}
+.set-field { display: flex; flex-direction: column; gap: 5px; }
+.set-field label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.set-field input, .wallet-row input {
+  background: var(--bg-panel-2); border: 1px solid var(--border-strong);
+  border-radius: 7px; padding: 8px 10px;
+  font-family: var(--mono); font-size: 12px; color: var(--ink);
+  outline: 0; width: 100%;
+}
+.set-field input:focus, .wallet-row input:focus { border-color: var(--cyan); }
+.wallet-row { display: grid; grid-template-columns: 1fr 1.6fr auto; gap: 8px; align-items: center; }
+.wallet-remove {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--bg-panel-2); border: 1px solid var(--border-strong);
+  color: var(--ink-3); cursor: pointer; font-size: 16px; line-height: 1;
+}
+.wallet-remove:hover { color: var(--red); border-color: rgba(255,59,92,.4); }
+.wallet-add {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: 1px dashed var(--border-strong);
+  border-radius: 7px; padding: 7px 12px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+  cursor: pointer; transition: .15s;
+}
+.wallet-add:hover { color: var(--cyan); border-color: var(--cyan); }
+.set-actions {
+  display: flex; align-items: center; gap: 12px;
+  padding: 4px 18px 18px;
+}
+.set-save-btn {
+  background: rgba(0,240,255,.12); border: 1px solid var(--cyan);
+  color: var(--cyan); border-radius: 8px; padding: 9px 18px;
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  letter-spacing: .04em; cursor: pointer; transition: .15s;
+}
+.set-save-btn:hover { background: rgba(0,240,255,.2); }
+.set-save-btn:disabled { opacity: .5; cursor: default; }
+.set-msg { font-family: var(--mono); font-size: 11.5px; }
+.set-msg.ok { color: var(--green); }
+.set-msg.err { color: var(--red); }
+@media (max-width: 767px) {
+  .cred-grid { grid-template-columns: 1fr; }
+  .wallet-row { grid-template-columns: 1fr; }
+}
+
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; }
 .setting-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -1355,6 +1470,14 @@ body {
   .inv-table tbody td:first-child .asset-cell { width: 100%; }
   .pnl-cell { align-items: flex-end; }
 
+  /* history table: first column is "Fecha", not an asset header */
+  .hist-table tbody td:first-child {
+    padding: 7px 0; margin-bottom: 0; border-bottom: 0;
+  }
+  .hist-table tbody td:first-child::before { display: block; }
+  .hist-search { width: 100%; }
+  .hist-search input { width: 100%; }
+
   /* ----- bottom dock ----- */
   .mobile-dock {
     display: flex; align-items: center; justify-content: space-around;
@@ -1477,6 +1600,17 @@ const EVENT_TYPES = {
   'IMPORTACIÓN CSV': { color: '#FFB020',  dot: '#FFB020' },
 };
 
+// Iconos por tipo de evento (Registro Histórico — MAR-20)
+const EVENT_ICONS = {
+  'COMPRA':          'arrowDown',
+  'VENTA':           'arrowUp',
+  'TRANSFERENCIA':   'transfer',
+  'FUTURES PNL':     'hedge',
+  'COMISIÓN':        'percent',
+  'SYNC':            'plug',
+  'IMPORTACIÓN CSV': 'file',
+};
+
 const SEED_EVENTS = [
   { type: 'COMPRA',          parts: ['0.5 ETH @ BingX ', { mono: '(VWAP actualizado)' }],              ago: '12s' },
   { type: 'TRANSFERENCIA',   parts: ['10,000 USDC → Arbitrum ', { mono: '(costo base preservado)' }],   ago: '1m'  },
@@ -1535,11 +1669,16 @@ const fmtQty = (n) => {
   if (n >= 1)    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
   return n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
 };
+const fmtDate = (iso) => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleString('es-ES', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+};
 
 Object.assign(window, {
   ASSET_COLORS, LOCATIONS, INVENTORY, SOURCES,
-  EVENT_TYPES, SEED_EVENTS, LIVE_EVENT_POOL, FUTURES_FLOW,
-  fmtUSD, fmtNum, fmtQty,
+  EVENT_TYPES, EVENT_ICONS, SEED_EVENTS, LIVE_EVENT_POOL, FUTURES_FLOW,
+  fmtUSD, fmtNum, fmtQty, fmtDate,
 });
 
 })();
@@ -1614,6 +1753,25 @@ const Icons = {
     h('path', { key: 2, d: 'M14 2v4h4' }),
   ]),
   plus: (p) => h(Icon, p, [ h('path', { key: 1, d: 'M12 5v14M5 12h14' }) ]),
+  arrowUp: (p) => h(Icon, p, [ h('path', { key: 1, d: 'M12 19V5M5 12l7-7 7 7' }) ]),
+  arrowDown: (p) => h(Icon, p, [ h('path', { key: 1, d: 'M12 5v14M5 12l7 7 7-7' }) ]),
+  transfer: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M3 8h13M16 8l-3-3M16 8l-3 3' }),
+    h('path', { key: 2, d: 'M21 16H8M8 16l3-3M8 16l3 3' }),
+  ]),
+  percent: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M19 5L5 19' }),
+    h('circle', { key: 2, cx: 6.5, cy: 6.5, r: 2.5 }),
+    h('circle', { key: 3, cx: 17.5, cy: 17.5, r: 2.5 }),
+  ]),
+  search: (p) => h(Icon, p, [
+    h('circle', { key: 1, cx: 11, cy: 11, r: 7 }),
+    h('path', { key: 2, d: 'M21 21l-4.3-4.3' }),
+  ]),
+  history: (p) => h(Icon, p, [
+    h('circle', { key: 1, cx: 12, cy: 12, r: 9 }),
+    h('path', { key: 2, d: 'M12 7v5l3.5 2' }),
+  ]),
 };
 
 function BrandMark() {
@@ -1643,6 +1801,7 @@ const NAV = [
   { key: 'spot',      label: 'Inventario Spot',      icon: 'spot', badge: '8' },
   { key: 'hedge',     label: 'Coberturas · Futuros', icon: 'hedge' },
   { key: 'apis',      label: 'Gestión APIs / CSV',   icon: 'api' },
+  { key: 'historial', label: 'Historial',            icon: 'history' },
   { key: 'settings',  label: 'Configuración',        icon: 'settings' },
 ];
 
@@ -1689,6 +1848,7 @@ const SECTION_TITLES = {
   spot: 'Inventario Spot',
   hedge: 'Coberturas · Futuros',
   apis: 'Gestión de APIs / CSV',
+  historial: 'Historial de Transacciones',
   settings: 'Configuración',
 };
 
@@ -1911,7 +2071,74 @@ function InventoryTable({ rows, filter, onFilter, sort, onSort, flashMap }) {
   ]);
 }
 
-Object.assign(window, { Sidebar, Topbar, KpiRow, InventoryTable });
+/* ----------------------------- Performance section (MAR-21) ----------------------------- */
+const PERF_COLS = [
+  { key: 'sym',          label: 'Activo',           align: 'left' },
+  { key: 'cost_total',   label: 'Costo Total',      align: 'right' },
+  { key: 'market_value', label: 'Valor de Mercado', align: 'right' },
+  { key: 'unrealized',   label: 'PnL No Realizado', align: 'right' },
+  { key: 'realized',     label: 'PnL Realizado',    align: 'right' },
+];
+
+function PerformerCard({ label, row }) {
+  const pos = row.pnl_pct >= 0;
+  const accent = pos ? 'var(--green)' : 'var(--red)';
+  return h('div', { className: 'perf-highlight', style: { '--accent': accent } }, [
+    h('div', { className: 'perf-label', key: 'l' }, label),
+    h('div', { className: 'perf-asset', key: 'a' }, [
+      h('b', { key: 's', style: { color: 'var(--ink)' } }, row.sym), ' · ' + row.name,
+    ]),
+    h('div', { className: 'perf-pct', key: 'p', style: { color: accent } },
+      (pos ? '+' : '') + row.pnl_pct.toFixed(2) + '%'),
+    h('div', { className: 'perf-usd', key: 'u', style: { color: accent } },
+      (pos ? '+' : '−') + fmtUSD(Math.abs(row.pnl_usd)).slice(1) + ' no realizado'),
+  ]);
+}
+
+function PerformanceSection({ pnlData }) {
+  if (!pnlData || !pnlData.assets || !pnlData.assets.length) return null;
+  const { assets, top, worst } = pnlData;
+
+  return h('div', { className: 'card', style: { overflow: 'hidden' } }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      h('h2', { key: 't' }, 'Rendimiento por Activo'),
+      h('span', { className: 'hint', key: 'hint' }, 'PnL no realizado + realizado'),
+    ]),
+    (top || worst) ? h('div', { className: 'perf-highlight-row', key: 'hl' }, [
+      top ? h(PerformerCard, { key: 'top', label: '🏆 Mejor Activo', row: top }) : h('div', { key: 'top' }),
+      worst ? h(PerformerCard, { key: 'worst', label: '⚠ Peor Activo', row: worst }) : h('div', { key: 'worst' }),
+    ]) : null,
+    h('div', { key: 'tw', style: { overflowX: 'auto' } }, h('table', { className: 'inv-table' }, [
+      h('thead', { key: 'h' }, h('tr', {}, PERF_COLS.map(c =>
+        h('th', { key: c.key, style: { textAlign: c.align } }, c.label)
+      ))),
+      h('tbody', { key: 'b' }, assets.map(row => {
+        const posUnreal = row.pnl_usd >= 0;
+        const hasRealized = Math.abs(row.realized_pnl) > 1e-9;
+        const posReal = row.realized_pnl >= 0;
+        return h('tr', { key: row.sym }, [
+          h('td', { key: 'a', 'data-label': 'Activo' }, [
+            h('b', { key: 's' }, row.sym), ' ',
+            h('span', { key: 'n', style: { color: 'var(--ink-3)', fontSize: 11 } }, row.name),
+          ]),
+          h('td', { key: 'c', 'data-label': 'Costo Total', style: { textAlign: 'right' } }, fmtUSD(row.cost_total)),
+          h('td', { key: 'm', 'data-label': 'Valor de Mercado', style: { textAlign: 'right' } }, fmtUSD(row.market_value)),
+          h('td', { key: 'u', 'data-label': 'PnL No Realizado', style: { textAlign: 'right' } },
+            h('span', { className: 'pnl-cell ' + (posUnreal ? 'pnl-pos' : 'pnl-neg') }, [
+              h('span', { key: 'a' }, (posUnreal ? '+' : '−') + fmtUSD(Math.abs(row.pnl_usd)).slice(1)),
+              h('span', { className: 'pnl-pct', key: 'b' }, (posUnreal ? '+' : '') + row.pnl_pct.toFixed(2) + '%'),
+            ])),
+          h('td', {
+            key: 'r', 'data-label': 'PnL Realizado', style: { textAlign: 'right' },
+            className: hasRealized ? (posReal ? 'pnl-pos' : 'pnl-neg') : '',
+          }, hasRealized ? (posReal ? '+' : '−') + fmtUSD(Math.abs(row.realized_pnl)).slice(1) : '—'),
+        ]);
+      })),
+    ])),
+  ]);
+}
+
+Object.assign(window, { Sidebar, Topbar, KpiRow, InventoryTable, PerformanceSection });
 
 })();
 </script>
@@ -2026,6 +2253,114 @@ function EventLog({ events }) {
         ]),
       ]);
     })),
+  ]);
+}
+
+/* ----------------------------- History View (MAR-20) ----------------------------- */
+const HIST_COLS = [
+  { key: 'timestamp',       label: 'Fecha',          align: 'right' },
+  { key: 'event_type',      label: 'Tipo',           align: 'left'  },
+  { key: 'asset',           label: 'Activo',         align: 'left'  },
+  { key: 'quantity',        label: 'Cantidad',       align: 'right' },
+  { key: 'price',           label: 'Precio',         align: 'right' },
+  { key: 'venue',           label: 'Origen / Venue', align: 'left'  },
+  { key: 'destination',     label: 'Destino',        align: 'left'  },
+  { key: 'fee',             label: 'Fee',            align: 'right' },
+  { key: 'transaction_hash',label: 'TX / Referencia',align: 'left'  },
+];
+
+function HistoryView() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [assetFilter, setAssetFilter] = useState('Todos');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!window.QuantumAPI) { setLoading(false); return; }
+    setLoading(true);
+    window.QuantumAPI.events({ limit: 500 })
+      .then((data) => {
+        if (cancelled) return;
+        setEvents(data.events || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setError('No se pudo cargar el historial.');
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const assets = useMemo(() => {
+    const set = new Set(events.map(e => e.asset));
+    return ['Todos', ...Array.from(set).sort()];
+  }, [events]);
+
+  const filtered = useMemo(() => {
+    let rows = events;
+    if (assetFilter !== 'Todos') rows = rows.filter(e => e.asset === assetFilter);
+    const q = search.trim().toLowerCase();
+    if (q) {
+      rows = rows.filter(e =>
+        (e.transaction_hash || '').toLowerCase().includes(q) ||
+        (e.venue || '').toLowerCase().includes(q) ||
+        (e.destination || '').toLowerCase().includes(q)
+      );
+    }
+    return rows;
+  }, [events, assetFilter, search]);
+
+  return h('div', { className: 'card', style: { overflow: 'hidden' } }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      h('h2', { key: 't' }, 'Registro Histórico Completo'),
+      h('span', { className: 'hint', key: 'hint' }, filtered.length + ' eventos'),
+      h('div', { className: 'spacer', key: 'sp' }),
+      h('div', { className: 'hist-search', key: 'search' }, [
+        Icons.search({ key: 'i', size: 14 }),
+        h('input', {
+          key: 'in', type: 'text', placeholder: 'Buscar por TX hash, venue o destino…',
+          value: search, onChange: (e) => setSearch(e.target.value),
+        }),
+      ]),
+      h('div', { className: 'seg', key: 'seg' }, assets.map(a =>
+        h('button', { key: a, className: assetFilter === a ? 'on' : '', onClick: () => setAssetFilter(a) }, a)
+      )),
+    ]),
+    loading ? h('div', { className: 'hist-empty', key: 'l' }, 'Cargando historial…')
+    : error ? h('div', { className: 'hist-empty', key: 'e' }, error)
+    : !filtered.length ? h('div', { className: 'hist-empty', key: 'em' }, 'Sin eventos para los filtros seleccionados.')
+    : h('div', { key: 'tw', style: { overflowX: 'auto' } }, h('table', { className: 'inv-table hist-table' }, [
+      h('thead', { key: 'h' }, h('tr', {}, HIST_COLS.map(c =>
+        h('th', { key: c.key, style: { textAlign: c.align } }, c.label)
+      ))),
+      h('tbody', { key: 'b' }, filtered.map(ev => {
+        const t = EVENT_TYPES[ev.label] || { color: '#9AA4B6', dot: '#9AA4B6' };
+        const icon = EVENT_ICONS[ev.label] || 'plug';
+        return h('tr', { key: ev.id }, [
+          h('td', { key: 'd', 'data-label': 'Fecha', style: { textAlign: 'right' } }, fmtDate(ev.timestamp)),
+          h('td', { key: 'ty', 'data-label': 'Tipo' }, h('span', {
+            className: 'hist-type',
+            style: { color: t.color, borderColor: t.color + '44', background: t.color + '14' },
+          }, [
+            Icons[icon]({ key: 'i', size: 13 }),
+            h('span', { key: 'l' }, ev.label),
+          ])),
+          h('td', { key: 'a', 'data-label': 'Activo' }, h('b', { style: { color: 'var(--ink)' } }, ev.asset)),
+          h('td', { key: 'q', 'data-label': 'Cantidad', style: { textAlign: 'right' } }, fmtQty(ev.quantity)),
+          h('td', { key: 'p', 'data-label': 'Precio', style: { textAlign: 'right' } },
+            ev.price ? fmtUSD(ev.price, ev.price < 10 ? 4 : 2) : '—'),
+          h('td', { key: 'v', 'data-label': 'Origen / Venue' }, ev.venue || '—'),
+          h('td', { key: 'de', 'data-label': 'Destino' }, ev.destination || '—'),
+          h('td', { key: 'f', 'data-label': 'Fee', style: { textAlign: 'right' } },
+            ev.fee ? fmtUSD(ev.fee, ev.fee < 10 ? 4 : 2) : '—'),
+          h('td', { key: 'tx', 'data-label': 'TX / Referencia', className: 'mono', style: { color: 'var(--ink-3)', fontSize: 11 } },
+            ev.transaction_hash || '—'),
+        ]);
+      })),
+    ])),
   ]);
 }
 
@@ -2182,7 +2517,7 @@ function FuturesVault({ data }) {
   ]);
 }
 
-Object.assign(window, { Dropzone, EventLog, FuturesChart, FuturesVault });
+Object.assign(window, { Dropzone, EventLog, HistoryView, FuturesChart, FuturesVault });
 
 })();
 </script>
@@ -2207,6 +2542,7 @@ function App() {
   const [filter, setFilter] = useState('Todos');
   const [sort, setSort] = useState({ key: 'pnl', dir: 'desc' });
   const [events, setEvents] = useState(seedEvents);
+  const [pnlData, setPnlData] = useState(null);
 
   // -------- backend bootstrap + websocket stream --------
   useEffect(() => {
@@ -2222,6 +2558,10 @@ function App() {
           setEvents(snapshot.events.map(e => ({ ...e, uid: UID++, fresh: false })));
         }
       })
+      .catch(() => {});
+
+    window.QuantumAPI.pnl()
+      .then((data) => { if (!cancelled) setPnlData(data); })
       .catch(() => {});
 
     const ws = window.QuantumAPI.connect((message) => {
@@ -2349,11 +2689,13 @@ function App() {
           h(EventLog, { key: 'log', events }),
         ]),
       ]),
+      h(PerformanceSection, { key: 'perf', pnlData }),
       h(FuturesVault, { key: 'fv', data: futuresData }),
     ]);
   } else if (active === 'spot') {
     body = h('div', { className: 'section-view' }, [
       h(InventoryTable, { key: 't', rows: viewRows, filter, onFilter: setFilter, sort, onSort, flashMap }),
+      h(PerformanceSection, { key: 'perf', pnlData }),
     ]);
   } else if (active === 'hedge') {
     body = h('div', { className: 'section-view' }, [ h(FuturesVault, { key: 'fv', data: futuresData }) ]);
@@ -2362,6 +2704,8 @@ function App() {
       h(Dropzone, { key: 'dz', onIngest: ingestCSV }),
       h(EventLog, { key: 'log', events }),
     ]);
+  } else if (active === 'historial') {
+    body = h('div', { className: 'section-view' }, [ h(HistoryView, { key: 'hist' }) ]);
   } else {
     body = h(SettingsView, { key: 'set' });
   }
@@ -2376,6 +2720,141 @@ function App() {
   ]);
 }
 
+/* ----------------------------- Credentials panel (MAR-22) ----------------------------- */
+function CredentialsPanel() {
+  const [settings, setSettings] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [form, setForm] = useState({ bingx_api_key: '', bingx_api_secret: '', arbitrum_rpc_url: '' });
+  const [walletDraft, setWalletDraft] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!window.QuantumAPI) { setLoading(false); return; }
+    window.QuantumAPI.getSettings()
+      .then((data) => {
+        if (cancelled) return;
+        setSettings(data);
+        setWalletDraft(Object.entries(data.arbitrum_wallets || {}).map(([name, address]) => ({ name, address })));
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setError('No se pudo cargar la configuración.');
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const updateField = (key, value) => setForm(f => ({ ...f, [key]: value }));
+  const updateWallet = (idx, key, value) =>
+    setWalletDraft(prev => prev.map((w, i) => i === idx ? { ...w, [key]: value } : w));
+  const addWallet = () => setWalletDraft(prev => [...prev, { name: '', address: '' }]);
+  const removeWallet = (idx) => setWalletDraft(prev => prev.filter((_, i) => i !== idx));
+
+  const save = () => {
+    setSaving(true);
+    setSaveMsg(null);
+    const payload = {};
+    if (form.bingx_api_key.trim()) payload.bingx_api_key = form.bingx_api_key.trim();
+    if (form.bingx_api_secret.trim()) payload.bingx_api_secret = form.bingx_api_secret.trim();
+    if (form.arbitrum_rpc_url.trim()) payload.arbitrum_rpc_url = form.arbitrum_rpc_url.trim();
+    const wallets = {};
+    walletDraft.forEach(w => { if (w.name.trim() && w.address.trim()) wallets[w.name.trim()] = w.address.trim(); });
+    if (Object.keys(wallets).length) payload.arbitrum_wallets = wallets;
+
+    window.QuantumAPI.saveSettings(payload)
+      .then((data) => {
+        setSettings(data);
+        setForm({ bingx_api_key: '', bingx_api_secret: '', arbitrum_rpc_url: '' });
+        setSaveMsg({ ok: true, text: 'Configuración guardada correctamente.' });
+      })
+      .catch(() => setSaveMsg({ ok: false, text: 'Error al guardar la configuración.' }))
+      .finally(() => setSaving(false));
+  };
+
+  if (loading) {
+    return h('div', { className: 'card', style: { marginBottom: 18 } }, h('div', { className: 'hist-empty' }, 'Cargando configuración…'));
+  }
+  if (error) {
+    return h('div', { className: 'card', style: { marginBottom: 18 } }, h('div', { className: 'hist-empty' }, error));
+  }
+
+  return h('div', { className: 'card', style: { marginBottom: 18 }, key: 'cred' }, [
+    h('div', { className: 'card-head', key: 'h' }, [
+      Icons.lock({ key: 'i', size: 16 }),
+      h('h2', { key: 't' }, 'Conexiones & Secretos'),
+      h('span', { className: 'hint', key: 'hint' }, 'Las claves se guardan localmente y nunca se muestran completas'),
+    ]),
+    h('div', { className: 'cred-grid', key: 'g' }, [
+      h('div', { className: 'cred-card', key: 'bingx' }, [
+        h('div', { className: 'cred-card-title', key: 't' }, [
+          h('span', { key: 's', className: 'tag ' + (settings.bingx_configured ? 'green' : 'gray') },
+            settings.bingx_configured ? 'CONECTADO' : 'SIN CONFIGURAR'),
+          'BingX API (solo lectura)',
+        ]),
+        h('div', { className: 'cred-row', key: 'k' }, [
+          h('span', { className: 'cred-label', key: 'l' }, 'API Key'),
+          h('span', { className: 'cred-value mono', key: 'v' }, settings.bingx_api_key || '— sin configurar —'),
+        ]),
+        h('div', { className: 'cred-row', key: 's' }, [
+          h('span', { className: 'cred-label', key: 'l' }, 'API Secret'),
+          h('span', { className: 'cred-value mono', key: 'v' }, settings.bingx_api_secret || '— sin configurar —'),
+        ]),
+        h('div', { className: 'set-field', key: 'fk' }, [
+          h('label', { key: 'l' }, 'Nueva API Key'),
+          h('input', {
+            key: 'i', type: 'password', placeholder: '••••••••••••••••',
+            value: form.bingx_api_key, onChange: e => updateField('bingx_api_key', e.target.value),
+          }),
+        ]),
+        h('div', { className: 'set-field', key: 'fs' }, [
+          h('label', { key: 'l' }, 'Nuevo API Secret'),
+          h('input', {
+            key: 'i', type: 'password', placeholder: '••••••••••••••••',
+            value: form.bingx_api_secret, onChange: e => updateField('bingx_api_secret', e.target.value),
+          }),
+        ]),
+      ]),
+      h('div', { className: 'cred-card', key: 'arb' }, [
+        h('div', { className: 'cred-card-title', key: 't' }, [
+          h('span', { key: 's', className: 'tag ' + (settings.arbitrum_configured ? 'green' : 'gray') },
+            settings.arbitrum_configured ? 'CONECTADO' : 'SIN CONFIGURAR'),
+          'Arbitrum RPC',
+        ]),
+        h('div', { className: 'cred-row', key: 'r' }, [
+          h('span', { className: 'cred-label', key: 'l' }, 'RPC URL'),
+          h('span', { className: 'cred-value mono', key: 'v' }, settings.arbitrum_rpc_url || '— sin configurar —'),
+        ]),
+        h('div', { className: 'set-field', key: 'fr' }, [
+          h('label', { key: 'l' }, 'Nueva RPC URL'),
+          h('input', {
+            key: 'i', type: 'password', placeholder: 'https://...alchemy.com/v2/...',
+            value: form.arbitrum_rpc_url, onChange: e => updateField('arbitrum_rpc_url', e.target.value),
+          }),
+        ]),
+        h('div', { className: 'cred-label', key: 'wl', style: { marginTop: 4 } }, 'Carteras'),
+        ...walletDraft.map((w, i) => h('div', { className: 'wallet-row', key: 'w' + i }, [
+          h('input', { key: 'n', placeholder: 'Nombre', value: w.name, onChange: e => updateWallet(i, 'name', e.target.value) }),
+          h('input', { key: 'a', placeholder: '0x...', className: 'mono', value: w.address, onChange: e => updateWallet(i, 'address', e.target.value) }),
+          h('button', { key: 'x', className: 'wallet-remove', onClick: () => removeWallet(i) }, '×'),
+        ])),
+        h('button', { key: 'add', className: 'wallet-add', onClick: addWallet }, [
+          Icons.plus({ key: 'i', size: 12 }), ' Agregar wallet',
+        ]),
+      ]),
+    ]),
+    h('div', { className: 'set-actions', key: 'act' }, [
+      saveMsg ? h('span', { key: 'm', className: 'set-msg ' + (saveMsg.ok ? 'ok' : 'err') }, saveMsg.text) : null,
+      h('div', { className: 'spacer', key: 'sp' }),
+      h('button', { key: 'save', className: 'set-save-btn', disabled: saving, onClick: save },
+        saving ? 'Guardando…' : 'Guardar cambios'),
+    ]),
+  ]);
+}
+
 function SettingsView() {
   const items = [
     { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', on: true },
@@ -2386,18 +2865,21 @@ function SettingsView() {
     { l: 'Modo neón intenso', s: 'Aumenta el glow de los acentos', on: false },
   ];
   const [state, setState] = useState(items.map(i => i.on));
-  return h('div', { className: 'card', style: { padding: 4 } }, [
-    h('div', { className: 'card-head', key: 'h' }, [ h('h2', { key: 't' }, 'Configuración del sistema') ]),
-    h('div', { className: 'settings-grid', key: 'g' }, items.map((it, i) =>
-      h('div', { className: 'setting-row', key: i }, [
-        h('div', { key: 'l' }, [
-          h('div', { className: 'sl', key: 'a' }, it.l),
-          h('div', { className: 'ss', key: 'b' }, it.s),
-        ]),
-        h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : ''),
-          onClick: () => setState(s => s.map((v, j) => j === i ? !v : v)) }, h('i')),
-      ])
-    )),
+  return h(React.Fragment, {}, [
+    h(CredentialsPanel, { key: 'cred' }),
+    h('div', { className: 'card', style: { padding: 4 }, key: 'toggles' }, [
+      h('div', { className: 'card-head', key: 'h' }, [ h('h2', { key: 't' }, 'Configuración del sistema') ]),
+      h('div', { className: 'settings-grid', key: 'g' }, items.map((it, i) =>
+        h('div', { className: 'setting-row', key: i }, [
+          h('div', { key: 'l' }, [
+            h('div', { className: 'sl', key: 'a' }, it.l),
+            h('div', { className: 'ss', key: 'b' }, it.s),
+          ]),
+          h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : ''),
+            onClick: () => setState(s => s.map((v, j) => j === i ? !v : v)) }, h('i')),
+        ])
+      )),
+    ]),
   ]);
 }
 

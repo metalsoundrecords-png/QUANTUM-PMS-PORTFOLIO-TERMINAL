@@ -22,6 +22,7 @@ class Position:
     venue: str
     quantity: float = 0.0
     cost: float = 0.0
+    realized_pnl: float = 0.0
     lots: deque[Lot] = field(default_factory=deque)
 
     @property
@@ -59,16 +60,83 @@ class VWAPEngine:
         for idx, position in enumerate(self._positions.values(), start=1):
             if position.quantity <= 1e-12:
                 continue
+            price = prices.get(position.asset, position.avg_cost)
+            avg = position.avg_cost
+            qty = position.quantity
+            cost_total = avg * qty
+            market_value = price * qty
+            pnl_usd = market_value - cost_total
+            pnl_pct = ((price - avg) / avg * 100) if avg > 1e-12 else 0.0
             rows.append({
                 "id": idx,
                 "sym": position.asset,
                 "name": _asset_name(position.asset),
                 "loc": position.venue,
-                "qty": round(position.quantity, 8),
-                "avg": round(position.avg_cost, 6),
-                "price": prices.get(position.asset, position.avg_cost),
+                "qty": round(qty, 8),
+                "avg": round(avg, 6),
+                "price": price,
+                "cost_total": round(cost_total, 2),
+                "market_value": round(market_value, 2),
+                "pnl_usd": round(pnl_usd, 2),
+                "pnl_pct": round(pnl_pct, 2),
+                "realized_pnl": round(position.realized_pnl, 2),
             })
         return rows
+
+    def pnl_summary(self, prices: dict[str, float]) -> dict:
+        """
+        Desglose de PnL agregado por activo (cruzando venues).
+
+        Para cada activo retorna: cantidad total, costo total invertido,
+        valor de mercado, PnL no realizado ($/%) y PnL realizado acumulado.
+
+        top/worst identifican el mejor y peor activo por pnl_pct, considerando
+        solo posiciones con costo base > 0 (evita ruido de posiciones cerradas).
+        """
+        by_asset: dict[str, dict] = {}
+        for position in self._positions.values():
+            has_position = position.quantity > 1e-12
+            has_realized = abs(position.realized_pnl) > 1e-12
+            if not has_position and not has_realized:
+                continue
+            price = prices.get(position.asset, position.avg_cost)
+            agg = by_asset.setdefault(position.asset, {
+                "sym": position.asset,
+                "name": _asset_name(position.asset),
+                "qty": 0.0,
+                "cost_total": 0.0,
+                "market_value": 0.0,
+                "realized_pnl": 0.0,
+            })
+            agg["qty"] += position.quantity
+            agg["cost_total"] += position.avg_cost * position.quantity
+            agg["market_value"] += price * position.quantity
+            agg["realized_pnl"] += position.realized_pnl
+
+        rows = []
+        for asset, agg in by_asset.items():
+            cost_total = agg["cost_total"]
+            market_value = agg["market_value"]
+            pnl_usd = market_value - cost_total
+            pnl_pct = (pnl_usd / cost_total * 100) if cost_total > 1e-12 else 0.0
+            rows.append({
+                "sym": asset,
+                "name": agg["name"],
+                "qty": round(agg["qty"], 8),
+                "avg": round(cost_total / agg["qty"], 6) if agg["qty"] > 1e-12 else 0.0,
+                "cost_total": round(cost_total, 2),
+                "market_value": round(market_value, 2),
+                "pnl_usd": round(pnl_usd, 2),
+                "pnl_pct": round(pnl_pct, 2),
+                "realized_pnl": round(agg["realized_pnl"], 2),
+            })
+
+        ranked = [r for r in rows if r["cost_total"] > 1e-12]
+        ranked.sort(key=lambda r: r["pnl_pct"], reverse=True)
+        top = ranked[0] if ranked else None
+        worst = ranked[-1] if len(ranked) > 1 else None
+
+        return {"assets": rows, "top": top, "worst": worst}
 
     # ------------------------------------------------------------------ #
     #  Despacho                                                            #
@@ -109,18 +177,24 @@ class VWAPEngine:
         FIFO: descarga lotes más antiguos primero.
         El VWAP de los lotes restantes no se altera porque el costo se reduce
         proporcionalmente al unit_cost del lote descargado.
+
+        PnL Realizado = (precio_venta - unit_cost del lote) × cantidad descargada,
+        acumulado por posición. El fee de la venta se descuenta una sola vez.
         """
         position = self._get(event.asset, event.venue)
         remaining = event.quantity
+        sale_price = event.price
         while remaining > 0 and position.lots:
             lot = position.lots[0]
             used = min(remaining, lot.quantity)
+            position.realized_pnl += used * (sale_price - lot.unit_cost)
             position.quantity -= used
             position.cost -= used * lot.unit_cost
             lot.quantity -= used
             remaining -= used
             if lot.quantity <= 1e-12:
                 position.lots.popleft()
+        position.realized_pnl -= (event.fee or 0.0)
 
     def _handle_transfer_out(self, event: LedgerEvent) -> None:
         """

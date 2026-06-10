@@ -5,6 +5,7 @@ __pycache__/
 *.pyo
 *.pyd
 .env
+data/settings.json
 *.egg-info/
 dist/
 build/
