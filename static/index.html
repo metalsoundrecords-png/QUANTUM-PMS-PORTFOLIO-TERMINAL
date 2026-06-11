@@ -1341,6 +1341,23 @@ body {
 .toggle i { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--ink-3); transition: .2s; }
 .toggle.on { background: rgba(0,240,255,.18); border-color: var(--cyan); }
 .toggle.on i { left: 20px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.toggle.disabled { cursor: not-allowed; opacity: .45; filter: grayscale(1); }
+.toggle.disabled.on i { box-shadow: none; }
+.setting-row.locked { opacity: .7; }
+
+/* ============================================================
+   Modo neón intenso (toggle de Configuración)
+   ============================================================ */
+body.neon-mode .kpi-big { filter: drop-shadow(0 0 10px currentColor); }
+body.neon-mode .tag.green  { box-shadow: 0 0 12px rgba(57,255,20,.5); }
+body.neon-mode .tag.cyan   { box-shadow: 0 0 12px rgba(0,240,255,.5); }
+body.neon-mode .tag.purple { box-shadow: 0 0 12px rgba(157,0,255,.5); }
+body.neon-mode .tag.red    { box-shadow: 0 0 12px rgba(255,59,92,.5); }
+body.neon-mode .tag.amber  { box-shadow: 0 0 12px rgba(255,176,32,.5); }
+body.neon-mode .toggle.on i { box-shadow: 0 0 16px var(--cyan); }
+body.neon-mode .source-orb { filter: drop-shadow(0 0 8px currentColor); }
+body.neon-mode .vwap-fill { box-shadow: 0 0 14px var(--green); }
+body.neon-mode .nav-item.active { box-shadow: inset 0 0 0 1px rgba(0,240,255,.6), 0 0 14px rgba(0,240,255,.15); }
 
 /* ============================================================
    Mobile dock + compact topbar brand — hidden on desktop
@@ -2478,6 +2495,14 @@ const CACHED_SNAPSHOT = loadCachedSnapshot();
 
 function App() {
   const [active, setActive] = useStickyState('dashboard', 'quantum_active_tab');
+
+  // -------- modo neón: aplica la preferencia guardada al cargar, sin esperar a la pestaña Settings --------
+  useEffect(() => {
+    try {
+      const toggles = JSON.parse(window.localStorage.getItem('quantum_settings_toggles'));
+      document.body.classList.toggle('neon-mode', !!(toggles && toggles[5]));
+    } catch (e) {}
+  }, []);
   const [rows, setRows] = useState(() =>
     CACHED_SNAPSHOT && CACHED_SNAPSHOT.inventory ? CACHED_SNAPSHOT.inventory.map(r => ({ ...r })) : []);
   const [botRows, setBotRows] = useState(() =>
@@ -2893,26 +2918,49 @@ function CredentialsPanel() {
 
 function SettingsView() {
   const items = [
-    { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', on: true },
-    { l: 'Segregación de futuros', s: 'Aísla margen y PnL del inventario Spot', on: true },
+    { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', on: true, locked: true },
+    { l: 'Segregación de futuros', s: 'Aísla margen y PnL del inventario Spot', on: true, locked: true },
     { l: 'Auto-sync BingX API', s: 'Reconciliación cada 60s', on: true },
     { l: 'Attestation Trezor', s: 'Verificación de vault en frío', on: true },
     { l: 'Alertas de drift', s: 'Notificar si snapshot diverge >0.1%', on: false },
     { l: 'Modo neón intenso', s: 'Aumenta el glow de los acentos', on: false },
   ];
   const [state, setState] = useStickyState(items.map(i => i.on), 'quantum_settings_toggles');
+
+  // -------- modo neón: refleja el estado del switch en <body> --------
+  useEffect(() => {
+    document.body.classList.toggle('neon-mode', !!state[5]);
+  }, [state[5]]);
+
+  // -------- auto-sync BingX: sincroniza con el estado real del backend al montar --------
+  useEffect(() => {
+    if (window.QuantumSettings && typeof window.QuantumSettings.auto_sync_bingx === 'boolean') {
+      setState(s => s.map((v, i) => i === 2 ? window.QuantumSettings.auto_sync_bingx : v));
+    }
+  }, []);
+
+  const toggle = (i) => {
+    if (items[i].locked) return;
+    const prev = state;
+    const next = prev.map((v, j) => j === i ? !v : v);
+    setState(next);
+    if (i === 2 && window.QuantumAPI) {
+      window.QuantumAPI.saveSettings({ auto_sync_bingx: next[2] }).catch(() => setState(prev));
+    }
+  };
+
   return h(React.Fragment, {}, [
     h(CredentialsPanel, { key: 'cred' }),
     h('div', { className: 'card', style: { padding: 4 }, key: 'toggles' }, [
       h('div', { className: 'card-head', key: 'h' }, [ h('h2', { key: 't' }, 'Configuración del sistema') ]),
       h('div', { className: 'settings-grid', key: 'g' }, items.map((it, i) =>
-        h('div', { className: 'setting-row', key: i }, [
+        h('div', { className: 'setting-row' + (it.locked ? ' locked' : ''), key: i }, [
           h('div', { key: 'l' }, [
             h('div', { className: 'sl', key: 'a' }, it.l),
-            h('div', { className: 'ss', key: 'b' }, it.s),
+            h('div', { className: 'ss', key: 'b' }, it.s + (it.locked ? ' · función estructural, no editable' : '')),
           ]),
-          h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : ''),
-            onClick: () => setState(s => s.map((v, j) => j === i ? !v : v)) }, h('i')),
+          h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : '') + (it.locked ? ' disabled' : ''),
+            onClick: () => toggle(i) }, h('i')),
         ])
       )),
     ]),

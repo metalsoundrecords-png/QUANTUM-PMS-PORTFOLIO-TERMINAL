@@ -70,6 +70,7 @@ def get_config() -> dict:
         "bingx_api_secret": overrides.get("bingx_api_secret") or BINGX_API_SECRET,
         "arbitrum_rpc_url": overrides.get("arbitrum_rpc_url") or ARBITRUM_RPC_URL,
         "arbitrum_wallets": _normalize_wallets(overrides.get("arbitrum_wallets") or ARBITRUM_WALLETS),
+        "auto_sync_bingx": overrides.get("auto_sync_bingx", True),
     }
 
 
@@ -83,6 +84,8 @@ def update_config(updates: dict) -> dict:
     wallets = updates.get("arbitrum_wallets")
     if wallets:
         overrides["arbitrum_wallets"] = wallets
+    if "auto_sync_bingx" in updates and updates["auto_sync_bingx"] is not None:
+        overrides["auto_sync_bingx"] = bool(updates["auto_sync_bingx"])
     SETTINGS_FILE.write_text(json.dumps(overrides, indent=2))
     return get_config()
 

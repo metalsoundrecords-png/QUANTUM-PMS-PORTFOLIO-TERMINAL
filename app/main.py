@@ -46,6 +46,7 @@ class SettingsUpdate(BaseModel):
     bingx_api_secret: str | None = None
     arbitrum_rpc_url: str | None = None
     arbitrum_wallets: dict[str, ArbitrumWalletConfig] | None = None
+    auto_sync_bingx: bool | None = None
 
 
 app = FastAPI(title="Quantum PMS", version="0.2.0")
@@ -74,6 +75,9 @@ async def _bingx_sync_loop() -> None:
     while True:
         await asyncio.sleep(SYNC_INTERVAL_MINUTES * 60)
         cfg = settings_store.get_config()
+        if not cfg["auto_sync_bingx"]:
+            log.info("BingX auto-sync desactivado por el usuario, ciclo omitido")
+            continue
         if not cfg["bingx_api_key"] or not cfg["bingx_api_secret"]:
             continue
         try:
@@ -197,6 +201,7 @@ def get_settings() -> dict:
         "arbitrum_rpc_url": settings_store.obfuscate_url(cfg["arbitrum_rpc_url"]),
         "arbitrum_configured": bool(cfg["arbitrum_rpc_url"]),
         "arbitrum_wallets": cfg["arbitrum_wallets"],
+        "auto_sync_bingx": cfg["auto_sync_bingx"],
     }
 
 
