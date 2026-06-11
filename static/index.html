@@ -969,13 +969,16 @@ body {
   background: #060810;
   border-top: 1px solid var(--border-strong);
   border-bottom: 1px solid var(--border-strong);
+  border-left: 3px solid var(--border-strong);
   color: var(--ink-3);
   font-size: 10px; font-weight: 600;
   letter-spacing: .14em; text-transform: uppercase;
   text-align: left;
+  transition: color .15s, border-left-color .15s;
 }
 .inv-table tbody tr.group-divider:hover td { background: #060810; }
 .inv-table tbody tr.group-divider:first-child td { border-top: 0; }
+body.neon-mode .inv-table tbody tr.group-divider td { text-shadow: 0 0 8px currentColor; }
 
 .asset-cell { display: flex; align-items: center; gap: 11px; }
 .asset-ico {
@@ -996,7 +999,9 @@ body {
   border: 1px solid var(--border);
   background: var(--bg-inset);
 }
-.loc-tag .ld { width: 6px; height: 6px; border-radius: 2px; }
+.loc-tag .ld { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; flex: none; }
+.loc-tag .ld svg { display: block; }
+body.neon-mode .loc-tag .ld { filter: drop-shadow(0 0 4px currentColor); }
 
 .pnl-pos { color: var(--green); }
 .pnl-neg { color: var(--red); }
@@ -1358,6 +1363,12 @@ body.neon-mode .toggle.on i { box-shadow: 0 0 16px var(--cyan); }
 body.neon-mode .source-orb { filter: drop-shadow(0 0 8px currentColor); }
 body.neon-mode .vwap-fill { box-shadow: 0 0 14px var(--green); }
 body.neon-mode .nav-item.active { box-shadow: inset 0 0 0 1px rgba(0,240,255,.6), 0 0 14px rgba(0,240,255,.15); }
+body.neon-mode .pnl-pos { text-shadow: 0 0 8px var(--green), 0 0 18px rgba(57,255,20,.6); }
+body.neon-mode .pnl-neg { text-shadow: 0 0 8px var(--red), 0 0 18px rgba(255,59,92,.6); }
+body.neon-mode .card { border-color: rgba(0,240,255,.25); box-shadow: 0 0 24px rgba(0,240,255,.06), inset 0 0 0 1px rgba(0,240,255,.04); }
+body.neon-mode .card-head h2 { text-shadow: 0 0 8px rgba(0,240,255,.7); }
+body.neon-mode .asset-sym { text-shadow: 0 0 6px rgba(255,255,255,.6); }
+body.neon-mode .loc-tag { border-color: currentColor; box-shadow: 0 0 8px currentColor; }
 
 /* ============================================================
    Mobile dock + compact topbar brand — hidden on desktop
@@ -1607,10 +1618,11 @@ const ASSET_COLORS = {
 
 // ---- Location/venue tags ----
 const LOCATIONS = {
-  BingX:    { color: '#00F0FF', label: 'BingX' },
-  Trezor:   { color: '#6EA8FF', label: 'Trezor' },
-  Arbitrum: { color: '#B24DFF', label: 'Arbitrum' },
-  Spot:     { color: '#9AA4B6', label: 'BingX Spot' },
+  BingX:       { color: '#00F0FF', label: 'BingX' },
+  Trezor:      { color: '#6EA8FF', label: 'Trezor' },
+  Arbitrum:    { color: '#B24DFF', label: 'Arbitrum' },
+  Spot:        { color: '#9AA4B6', label: 'BingX Spot' },
+  Hyperliquid: { color: '#39FFC9', label: 'Hyperliquid' },
 };
 
 // ---- Connected sources ----
@@ -1750,6 +1762,23 @@ const Icons = {
   history: (p) => h(Icon, p, [
     h('circle', { key: 1, cx: 12, cy: 12, r: 9 }),
     h('path', { key: 2, d: 'M12 7v5l3.5 2' }),
+  ]),
+  arbitrum: (p) => h(Icon, { ...p, vb: 32 }, [
+    h('path', { key: 1, d: 'M16 2L4 9v14l12 7 12-7V9L16 2z' }),
+    h('path', { key: 2, d: 'M11 21l5-13 5 13M13.2 17h5.6' }),
+  ]),
+  hyperliquid: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M12 2C8 7 5 11 5 14.5a7 7 0 0014 0C19 11 16 7 12 2z' }),
+    h('path', { key: 2, d: 'M9 14.5a3 3 0 006 0' }),
+  ]),
+  bingx: (p) => h(Icon, p, [
+    h('circle', { key: 1, cx: 12, cy: 12, r: 9.5 }),
+    h('path', { key: 2, d: 'M8 8l8 8M16 8l-8 8' }),
+  ]),
+  trezor: (p) => h(Icon, p, [
+    h('path', { key: 1, d: 'M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z' }),
+    h('circle', { key: 2, cx: 12, cy: 11, r: 2 }),
+    h('path', { key: 3, d: 'M12 13v3' }),
   ]),
 };
 
@@ -1992,10 +2021,28 @@ const COLS = [
 
 const BOT_TYPES = ['Hedge', 'Linear', 'Grid', 'Trading'];
 
+// ---- Colores neón por familia de bot (group-divider) ----
+const BOT_TYPE_COLORS = {
+  Grid:    '#00F0FF', // cyan
+  Hedge:   '#FF3BD4', // magenta
+  Linear:  '#39FF14', // verde
+  Trading: '#FFB020', // ámbar
+  Otros:   '#9AA4B6', // gris
+};
+
+// ---- Icono de marca por venue ----
+function venueIcon(loc) {
+  if (loc === 'Hyperliquid') return Icons.hyperliquid;
+  if (loc.startsWith('Arb')) return Icons.arbitrum;
+  if (loc === 'Trezor') return Icons.trezor;
+  return Icons.bingx; // BingX, BingX Spot
+}
+
 function LocTag({ loc }) {
   const L = LOCATIONS[loc] || { color: '#9AA4B6', label: loc };
+  const VenueIcon = venueIcon(loc);
   return h('span', { className: 'loc-tag', style: { color: L.color } }, [
-    h('span', { className: 'ld', key: 'd', style: { background: L.color, boxShadow: `0 0 6px ${L.color}` } }),
+    h('span', { className: 'ld', key: 'd' }, h(VenueIcon, { size: 13 })),
     h('span', { key: 'l', style: { color: 'var(--ink-2)' } }, L.label),
   ]);
 }
@@ -2033,8 +2080,9 @@ function InventoryTable({ rows, filter, onFilter, sort, onSort, flashMap, title,
       ))),
       h('tbody', { key: 'b' }, rows.map(row => {
         if (row.__group) {
+          const gc = row.color || '#9AA4B6';
           return h('tr', { key: row.id, className: 'group-divider' },
-            h('td', { colSpan: COLS.length }, row.label));
+            h('td', { colSpan: COLS.length, style: { color: gc, borderLeftColor: gc } }, row.label));
         }
         const value = row.qty * row.price;
         const cost = row.qty * row.avg;
@@ -2142,7 +2190,7 @@ function PerformanceSection({ pnlData }) {
   ]);
 }
 
-Object.assign(window, { Sidebar, Topbar, KpiRow, InventoryTable, PerformanceSection, BOT_TYPES });
+Object.assign(window, { Sidebar, Topbar, KpiRow, InventoryTable, PerformanceSection, BOT_TYPES, BOT_TYPE_COLORS });
 
 })();
 </script>
@@ -2496,13 +2544,15 @@ const CACHED_SNAPSHOT = loadCachedSnapshot();
 function App() {
   const [active, setActive] = useStickyState('dashboard', 'quantum_active_tab');
 
-  // -------- modo neón: aplica la preferencia guardada al cargar, sin esperar a la pestaña Settings --------
+  // -------- ajustes globales del sistema (persistentes) --------
+  const [toggles, setToggles] = useStickyState(
+    [true, true, true, true, false, false], 'quantum_settings_toggles');
+  const segregacionOn = toggles[1];
+
+  // -------- modo neón: refleja el toggle en una clase global del body --------
   useEffect(() => {
-    try {
-      const toggles = JSON.parse(window.localStorage.getItem('quantum_settings_toggles'));
-      document.body.classList.toggle('neon-mode', !!(toggles && toggles[5]));
-    } catch (e) {}
-  }, []);
+    document.body.classList.toggle('neon-mode', !!toggles[5]);
+  }, [toggles]);
   const [rows, setRows] = useState(() =>
     CACHED_SNAPSHOT && CACHED_SNAPSHOT.inventory ? CACHED_SNAPSHOT.inventory.map(r => ({ ...r })) : []);
   const [botRows, setBotRows] = useState(() =>
@@ -2514,9 +2564,9 @@ function App() {
   const [cashRows, setCashRows] = useState(() =>
     CACHED_SNAPSHOT && CACHED_SNAPSHOT.futures_cash ? CACHED_SNAPSHOT.futures_cash.map(r => ({ ...r })) : []);
   const [flashMap, setFlashMap] = useState({});
-  const [filter, setFilter] = useState('Todos');
+  const [filter, setFilter] = useStickyState('Todos', 'quantum_filter');
   const [sort, setSort] = useState({ key: 'pnl', dir: 'desc' });
-  const [botFilter, setBotFilter] = useState('Todos');
+  const [botFilter, setBotFilter] = useStickyState('Todos', 'quantum_bot_filter');
   const [botSort, setBotSort] = useState({ key: 'qty', dir: 'desc' });
   const [events, setEvents] = useState(() =>
     CACHED_SNAPSHOT && CACHED_SNAPSHOT.events ? CACHED_SNAPSHOT.events.map(e => ({ ...e, uid: UID++, fresh: false })) : []);
@@ -2643,7 +2693,7 @@ function App() {
       }
       if (botFilter === 'Hyperliquid') {
         const v = row.hl_value || 0;
-        return { ...row, qty: v, cost_total: v, market_value: v };
+        return { ...row, qty: v, cost_total: v, market_value: v, loc: 'Hyperliquid' };
       }
       return row; // 'Todos': fila unificada (Arbitrum + Hyperliquid)
     });
@@ -2683,7 +2733,7 @@ function App() {
     [...BOT_TYPES, 'Otros'].forEach(t => {
       const grouped = groups[t];
       if (!grouped || !grouped.length) return;
-      out.push({ __group: true, id: 'group-' + t, label: `— ${t.toUpperCase()} BOTS —` });
+      out.push({ __group: true, id: 'group-' + t, label: `— ${t.toUpperCase()} BOTS —`, color: BOT_TYPE_COLORS[t] });
       out.push(...grouped);
     });
     return out;
@@ -2693,6 +2743,16 @@ function App() {
     : botFilter === 'Hyperliquid' ? 'solo valor de cuenta en Hyperliquid (Spot + Perp)'
     : 'equity unificado: Arbitrum (USDC/USDT) + Hyperliquid';
 
+  // -------- vista global unificada (Segregación de futuros: OFF) --------
+  const unifiedRows = useMemo(() => {
+    return [
+      { __group: true, id: 'group-Spot', label: '— PATRIMONIO SPOT (AHORROS) —', color: '#39FFC9' },
+      ...viewRows,
+      { __group: true, id: 'group-Bots', label: '— LIQUIDEZ DE BOTS —', color: '#9D00FF' },
+      ...botGroupedRows,
+    ];
+  }, [viewRows, botGroupedRows]);
+
   // -------- section views --------
   let body;
   if (active === 'dashboard') {
@@ -2700,11 +2760,18 @@ function App() {
       h(KpiRow, { key: 'kpi', totals, sparks: rows }),
       h('div', { className: 'center-grid', key: 'cg' }, [
         h('div', { className: 'left-col', key: 'lc' }, [
-          h(InventoryTable, { key: 't', rows: viewRows, filter, onFilter: setFilter, sort, onSort, flashMap }),
-          h(InventoryTable, {
-            key: 'bot', rows: botGroupedRows, filter: botFilter, onFilter: setBotFilter, sort: botSort, onSort: onBotSort, flashMap: {},
-            title: 'Liquidez de Bots · Futures Margin', hint: botHint, showFilters: true, filterOptions: ['Todos', 'Arbitrum', 'Hyperliquid'],
-          }),
+          ...(segregacionOn ? [
+            h(InventoryTable, { key: 't', rows: viewRows, filter, onFilter: setFilter, sort, onSort, flashMap }),
+            h(InventoryTable, {
+              key: 'bot', rows: botGroupedRows, filter: botFilter, onFilter: setBotFilter, sort: botSort, onSort: onBotSort, flashMap: {},
+              title: 'Liquidez de Bots · Futures Margin', hint: botHint, showFilters: true, filterOptions: ['Todos', 'Arbitrum', 'Hyperliquid'],
+            }),
+          ] : [
+            h(InventoryTable, {
+              key: 'unified', rows: unifiedRows, sort, onSort, flashMap, showFilters: false,
+              title: 'Patrimonio Global Unificado', hint: 'Spot + Bots fusionados · Segregación de futuros: OFF',
+            }),
+          ]),
           h(FuturesVault, { key: 'fv', stableEquity, realizedPnl, cashRows }),
         ]),
         h('div', { className: 'right-col', key: 'rc' }, [
@@ -2735,7 +2802,7 @@ function App() {
   } else if (active === 'historial') {
     body = h('div', { className: 'section-view' }, [ h(HistoryView, { key: 'hist' }) ]);
   } else {
-    body = h(SettingsView, { key: 'set' });
+    body = h(SettingsView, { key: 'set', toggles, setToggles });
   }
 
   return h('div', { className: 'app' }, [
@@ -2916,36 +2983,30 @@ function CredentialsPanel() {
   ]);
 }
 
-function SettingsView() {
+function SettingsView({ toggles, setToggles }) {
   const items = [
-    { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', on: true, locked: true },
-    { l: 'Segregación de futuros', s: 'Aísla margen y PnL del inventario Spot', on: true, locked: true },
-    { l: 'Auto-sync BingX API', s: 'Reconciliación cada 60s', on: true },
-    { l: 'Attestation Trezor', s: 'Verificación de vault en frío', on: true },
-    { l: 'Alertas de drift', s: 'Notificar si snapshot diverge >0.1%', on: false },
-    { l: 'Modo neón intenso', s: 'Aumenta el glow de los acentos', on: false },
+    { l: 'Motor VWAP en tiempo real', s: 'Recalcula coste promedio en cada fill', locked: true },
+    { l: 'Segregación de futuros', s: 'OFF fusiona Spot + Bots en una tabla "Patrimonio Global Unificado" en el Dashboard' },
+    { l: 'Auto-sync BingX API', s: 'Reconciliación cada 60s' },
+    { l: 'Attestation Trezor', s: 'Verificación de vault en frío' },
+    { l: 'Alertas de drift', s: 'Notificar si snapshot diverge >0.1%' },
+    { l: 'Modo neón intenso', s: 'Aumenta el glow de los acentos' },
   ];
-  const [state, setState] = useStickyState(items.map(i => i.on), 'quantum_settings_toggles');
-
-  // -------- modo neón: refleja el estado del switch en <body> --------
-  useEffect(() => {
-    document.body.classList.toggle('neon-mode', !!state[5]);
-  }, [state[5]]);
 
   // -------- auto-sync BingX: sincroniza con el estado real del backend al montar --------
   useEffect(() => {
     if (window.QuantumSettings && typeof window.QuantumSettings.auto_sync_bingx === 'boolean') {
-      setState(s => s.map((v, i) => i === 2 ? window.QuantumSettings.auto_sync_bingx : v));
+      setToggles(s => s.map((v, i) => i === 2 ? window.QuantumSettings.auto_sync_bingx : v));
     }
   }, []);
 
   const toggle = (i) => {
     if (items[i].locked) return;
-    const prev = state;
+    const prev = toggles;
     const next = prev.map((v, j) => j === i ? !v : v);
-    setState(next);
+    setToggles(next);
     if (i === 2 && window.QuantumAPI) {
-      window.QuantumAPI.saveSettings({ auto_sync_bingx: next[2] }).catch(() => setState(prev));
+      window.QuantumAPI.saveSettings({ auto_sync_bingx: next[2] }).catch(() => setToggles(prev));
     }
   };
 
@@ -2959,7 +3020,7 @@ function SettingsView() {
             h('div', { className: 'sl', key: 'a' }, it.l),
             h('div', { className: 'ss', key: 'b' }, it.s + (it.locked ? ' · función estructural, no editable' : '')),
           ]),
-          h('div', { key: 't', className: 'toggle' + (state[i] ? ' on' : '') + (it.locked ? ' disabled' : ''),
+          h('div', { key: 't', className: 'toggle' + (toggles[i] ? ' on' : '') + (it.locked ? ' disabled' : ''),
             onClick: () => toggle(i) }, h('i')),
         ])
       )),
